@@ -9,9 +9,10 @@ using System.Text;
 using System.Threading.Tasks;
 using Windows.Media.Ocr;
 
-namespace GenshinAchievement.Core
+namespace GenshinAchievement.Model
 {
-    public class Achievement
+    [Serializable]
+    public class OcrAchievement
     {
         public int Index { get; set; }
         public Bitmap Image { get; set; }
@@ -51,9 +52,9 @@ namespace GenshinAchievement.Core
         /// </summary>
         public string GameId { get; set; }
 
-        public Achievement Clone()
+        public OcrAchievement Clone()
         {
-            return new Achievement
+            return new OcrAchievement
             {
                 Index = this.Index,
                 ImageSrc = this.ImageSrc,

@@ -1,4 +1,5 @@
 ﻿using GenshinAchievement.Core;
+using GenshinAchievement.Model;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -14,19 +15,19 @@ namespace GenshinAchievement.Utils
     class OcrUtils
     {
 
-        public static async void Ocr(List<Achievement> achievementList)
+        public static async void Ocr(List<OcrAchievement> achievementList)
         {
             JavaScriptSerializer serializer = new JavaScriptSerializer();
             Windows.Globalization.Language lang = new Windows.Globalization.Language("zh-Hans-CN");
             OcrEngine engine = OcrEngine.TryCreateFromLanguage(lang);
-            foreach (Achievement a in achievementList)
+            foreach (OcrAchievement a in achievementList)
             {
                 string r = await a.Ocr(engine);
                 Console.WriteLine(r);
             }
             Console.WriteLine("识别结束");
             string context = "";
-            foreach (Achievement a in achievementList)
+            foreach (OcrAchievement a in achievementList)
             {
                 a.Image = null;
                 //context += $"------------------\n";

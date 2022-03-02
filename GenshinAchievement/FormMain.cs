@@ -1,4 +1,5 @@
 ﻿using GenshinAchievement.Core;
+using GenshinAchievement.Model;
 using GenshinAchievement.Utils;
 using System;
 using System.Collections.Generic;
@@ -85,14 +86,14 @@ namespace GenshinAchievement
             //strainBarArea.Location = new System.Drawing.Point((int)((rc.X + 300) * PrimaryScreen.ScaleX), (int)(rc.Y * PrimaryScreen.ScaleY + 16));
         }
 
-        private List<Achievement> TestLocalAchievementPic()
+        private List<OcrAchievement> TestLocalAchievementPic()
         {
-            List<Achievement> list = new List<Achievement>();
+            List<OcrAchievement> list = new List<OcrAchievement>();
             DirectoryInfo dir = new DirectoryInfo(@"testout");
             FileInfo[] fileInfo = dir.GetFiles();
             foreach (FileInfo item in fileInfo)
             {
-                Achievement achievement = new Achievement();
+                OcrAchievement achievement = new OcrAchievement();
                 achievement.Image = (Bitmap)Image.FromFile(item.FullName);
                 achievement.ImagePath = item.FullName;
                 list.Add(achievement);
@@ -124,7 +125,7 @@ namespace GenshinAchievement
 
         private void btnOCR_Click(object sender, EventArgs e)
         {
-            List<Achievement> list = TestLocalAchievementPic();
+            List<OcrAchievement> list = TestLocalAchievementPic();
             OcrUtils.Ocr(list);
 
         }
@@ -150,7 +151,7 @@ namespace GenshinAchievement
             Thread.Sleep(1000);
 
 
-            List<Achievement> achievementList = new List<Achievement>();
+            List<OcrAchievement> achievementList = new List<OcrAchievement>();
 
             int n = 0;
             int preCnt = 0;
@@ -229,7 +230,7 @@ namespace GenshinAchievement
                 //}
             }
 
-            foreach (Achievement a in achievementList)
+            foreach (OcrAchievement a in achievementList)
             {
                 a.Split();
                 a.Image.Save(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "testout", a.Index + ".png"));

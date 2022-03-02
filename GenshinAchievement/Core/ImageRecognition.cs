@@ -1,4 +1,5 @@
-﻿using System;
+﻿using GenshinAchievement.Model;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
@@ -82,12 +83,12 @@ namespace GenshinAchievement.Core
             return bitmap;
         }
 
-        public static bool Split(Bitmap imgSrc, ref List<Achievement> achievementList)
+        public static bool Split(Bitmap imgSrc, ref List<OcrAchievement> achievementList)
         {
             BitmapData data = imgSrc.LockBits(new Rectangle(0, 0, imgSrc.Width, imgSrc.Height), ImageLockMode.ReadWrite, PixelFormat.Format24bppRgb);
 
             bool preLineMatched = false; // 连贯的线
-            Achievement achievement = null;
+            OcrAchievement achievement = null;
             unsafe
             {
                 byte* ptr = (byte*)(data.Scan0);
@@ -110,7 +111,7 @@ namespace GenshinAchievement.Core
                         {
                             if (achievement == null)
                             {
-                                achievement = new Achievement
+                                achievement = new OcrAchievement
                                 {
                                     Index = achievementList.Count + 1,
                                     Y1 = y,
