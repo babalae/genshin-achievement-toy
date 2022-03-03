@@ -6,11 +6,13 @@ using System.Threading.Tasks;
 
 namespace GenshinAchievement.Utils
 {
-    class TextUtils
+    public class TextUtils
     {
 
         public static double Similarity(string txt1, string txt2)
         {
+            //txt1 = RetainChineseString(txt1);
+            //txt2 = RetainChineseString(txt2);
             List<char> sl1 = txt1.ToCharArray().ToList();
             List<char> sl2 = txt2.ToCharArray().ToList();
             //去重
@@ -37,6 +39,19 @@ namespace GenshinAchievement.Utils
             }
             double cos = num / (Math.Sqrt(numA) * Math.Sqrt(numB));
             return cos;
+        }
+
+        public static string RetainChineseString(string str)
+        {
+            StringBuilder chineseString = new StringBuilder();
+            for (int i = 0; i < str.Length; i++)
+            {
+                if (str[i] >= 0x4E00 && str[i] <= 0x9FA5) //汉字
+                {
+                    chineseString.Append(str[i]);
+                }
+            }
+            return chineseString.Length > 0 ? chineseString.ToString() : string.Empty;
         }
     }
 }

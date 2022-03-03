@@ -1,4 +1,5 @@
-﻿using GenshinAchievement.Utils;
+﻿using GenshinAchievement.Core;
+using GenshinAchievement.Utils;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -52,6 +53,8 @@ namespace GenshinAchievement.Model
         /// </summary>
         public string GameId { get; set; }
 
+        public ExistAchievement Match { get; set; }
+
         public OcrAchievement Clone()
         {
             return new OcrAchievement
@@ -90,7 +93,10 @@ namespace GenshinAchievement.Model
                 OcrText += lineStr + Environment.NewLine;
                 if (firstRect.Left < verticalX && firstRect.Bottom <= horizontalY + margin)
                 {
-                    OcrAchievementName = lineStr; // 左上
+                    if (string.IsNullOrEmpty(OcrAchievementName))
+                    {
+                        OcrAchievementName = lineStr; // 左上
+                    }
                 }
                 else if (firstRect.Left < verticalX && firstRect.Top >= horizontalY - margin)
                 {
@@ -105,6 +111,13 @@ namespace GenshinAchievement.Model
                     OcrAchievementFinshDate = lineStr; // 右下
                 }
             }
+
+            // 严格识别不到，就默认第一行
+            if (string.IsNullOrEmpty(OcrAchievementName))
+            {
+                OcrAchievementName = OcrUtils.LineString(ocrResult.Lines[0]); 
+            }
+
             return OcrText;
         }
     }

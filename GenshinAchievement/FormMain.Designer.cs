@@ -117,7 +117,6 @@ namespace GenshinAchievement
             this.Controls.Add(this.rtbConsole);
             this.Name = "FormMain";
             this.Text = "原神成就统计";
-            this.TopMost = true;
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.FormMain_FormClosed);
             this.Load += new System.EventHandler(this.FormMain_Load);
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).EndInit();

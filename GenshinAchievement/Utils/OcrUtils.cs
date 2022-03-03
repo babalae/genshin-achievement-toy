@@ -17,6 +17,8 @@ namespace GenshinAchievement.Utils
 
         public static async void Ocr(List<OcrAchievement> achievementList)
         {
+            PaimonMoeJson paimonMoeJson = PaimonMoeJson.Builder();
+
             JavaScriptSerializer serializer = new JavaScriptSerializer();
             Windows.Globalization.Language lang = new Windows.Globalization.Language("zh-Hans-CN");
             OcrEngine engine = OcrEngine.TryCreateFromLanguage(lang);
@@ -29,6 +31,7 @@ namespace GenshinAchievement.Utils
             string context = "";
             foreach (OcrAchievement a in achievementList)
             {
+                paimonMoeJson.Matching("0", a);
                 a.Image = null;
                 //context += $"------------------\n";
                 //context += $"{a.ImagePath}\n";
