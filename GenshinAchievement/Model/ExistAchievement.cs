@@ -11,21 +11,10 @@ namespace GenshinAchievement.Model
     {
         public int id;
         public string name;
+        public string edition;
         public string desc;
         public int reward;
         public string ver;
-
-        public static ExistAchievement Init(Dictionary<string, object> dic)
-        {
-            ExistAchievement e = new ExistAchievement
-            {
-                id = (int)dic["id"],
-                name = (string)dic["name"],
-                desc = (string)dic["desc"],
-                reward = (int)dic["reward"],
-                ver = (string)dic["ver"]
-            };
-            return e;
-        }
+        public List<string> levels;
     }
 }

@@ -17,7 +17,7 @@ namespace GenshinAchievement
     /// </summary>
     public partial class FormMotionArea : Form
     {
-        public static int RowRecOffset = 20;
+        //public static int RowRecOffset = 20;
         public FormMain FormMainInstance { get; set; }
 
         public FormMotionArea()
@@ -36,7 +36,7 @@ namespace GenshinAchievement
                             Color.Red,
                             ButtonBorderStyle.Solid);
             Pen pen = new Pen(Color.Green, 1);
-            g.DrawLine(pen, 0, RowRecOffset, Width, RowRecOffset);
+            //g.DrawLine(pen, 0, RowRecOffset, Width, RowRecOffset);
         }
 
         private void FormMotionArea_FormClosed(object sender, FormClosedEventArgs e)

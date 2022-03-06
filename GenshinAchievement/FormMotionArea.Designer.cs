@@ -35,13 +35,15 @@ namespace GenshinAchievement
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 18F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(592, 618);
+            this.BackColor = System.Drawing.Color.White;
+            this.ClientSize = new System.Drawing.Size(485, 276);
             this.Cursor = System.Windows.Forms.Cursors.SizeAll;
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.MinimumSize = new System.Drawing.Size(30, 30);
             this.Name = "FormMotionArea";
             this.Text = "成就框选区";
             this.TopMost = true;
+            this.TransparencyKey = System.Drawing.Color.White;
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.FormMotionArea_FormClosed);
             this.MouseDown += new System.Windows.Forms.MouseEventHandler(this.FormMotionArea_MouseDown);
             this.ResumeLayout(false);

@@ -19,8 +19,6 @@ namespace GenshinAchievement
     public partial class FormMain : Form
     {
 
-        public int Num { get; set; }
-
         private ImageCapture capture = new ImageCapture();
 
         private FormMotionArea area;
@@ -37,9 +35,8 @@ namespace GenshinAchievement
 
         private void FormMain_Load(object sender, EventArgs e)
         {
-            Num = 10;
 
-            InitAreaWindows();
+
             //TestScreen();
             //using (var ocr = new TesseractEngine(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "tessdata"), "chi_sim", EngineMode.Default))
             //{
@@ -65,25 +62,12 @@ namespace GenshinAchievement
             //capture.Start();
             //timerCapture.Start();
 
+            //if (window.FindYSHandle())
+            //{
+            //    capture.Start();
+            //    //timerCapture.Start();
+            //}
 
-        }
-
-        private void TestScreen()
-        {
-            PrintMsg($"获取真实设置的桌面分辨率大小 {PrimaryScreen.DESKTOP.Width} x {PrimaryScreen.DESKTOP.Height}");
-            PrintMsg($"获取屏幕分辨率当前物理大小 {PrimaryScreen.WorkingArea.Width} x {PrimaryScreen.WorkingArea.Height}");
-
-            PrintMsg($"获取缩放百分比 {PrimaryScreen.ScaleX} x {PrimaryScreen.ScaleY}");
-            PrintMsg($"当前系统DPI {PrimaryScreen.DpiX} x {PrimaryScreen.DpiY}");
-
-            if (!window.GetHWND())
-            {
-                PrintMsg("未找到原神进程，请先启动原神！");
-            }
-            Rectangle rc = window.GetSize();
-            PrintMsg($"原神窗口 {rc.Width} x {rc.Height}");
-            PrintMsg($"原神窗口 {rc.Width * PrimaryScreen.ScaleX} x {rc.Height * PrimaryScreen.ScaleY}");
-            //strainBarArea.Location = new System.Drawing.Point((int)((rc.X + 300) * PrimaryScreen.ScaleX), (int)(rc.Y * PrimaryScreen.ScaleY + 16));
         }
 
         private List<OcrAchievement> TestLocalAchievementPic()
@@ -101,26 +85,34 @@ namespace GenshinAchievement
             return list;
         }
 
-        private void InitAreaWindows()
+        private void InitAreaWindows(Rectangle rect)
         {
-            // 读取配置信息
-            area = new FormMotionArea();
-            area.FormMainInstance = this;
+            if (area == null)
+            {
+                area = new FormMotionArea();
+                area.FormMainInstance = this;
+            }
+            area.Location = new Point(rect.X, rect.Y);
+            area.Size = new Size(rect.Width, rect.Height);
             area.Show();
 
-            if (Properties.Settings.Default.AreaLocation.X >= 0 && Properties.Settings.Default.AreaLocation.Y >= 0)
-            {
-                area.Location = Properties.Settings.Default.AreaLocation;
-            }
-            area.Size = Properties.Settings.Default.AreaSize;
+            //if (Properties.Settings.Default.AreaLocation.X >= 0 && Properties.Settings.Default.AreaLocation.Y >= 0)
+            //{
+            //    area.Location = Properties.Settings.Default.AreaLocation;
+            //}
+            //area.Size = Properties.Settings.Default.AreaSize;
         }
 
         private void FormMain_FormClosed(object sender, FormClosedEventArgs e)
         {
-            Properties.Settings.Default.AreaLocation = area.Location;
-            Properties.Settings.Default.AreaSize = area.Size;
-            Properties.Settings.Default.Save();
-            area.Close();
+            if (area != null)
+            {
+                Properties.Settings.Default.AreaLocation = area.Location;
+                Properties.Settings.Default.AreaSize = area.Size;
+                Properties.Settings.Default.Save();
+                area.Close();
+            }
+
         }
 
         private void btnOCR_Click(object sender, EventArgs e)
@@ -130,23 +122,61 @@ namespace GenshinAchievement
 
         }
 
+        private void btnAutoArea_Click(object sender, EventArgs e)
+        {
+            if (!window.FindYSHandle())
+            {
+                PrintMsg("未找到原神进程，请先启动原神！");
+                return;
+            }
+
+            window.Focus();
+            capture.Start();
+            Thread.Sleep(500);
+            Rectangle rc = window.GetSize();
+            x = (int)Math.Ceiling(rc.X * PrimaryScreen.ScaleX);
+            y = (int)Math.Ceiling(rc.Y * PrimaryScreen.ScaleY);
+            w = (int)Math.Ceiling(rc.Width * PrimaryScreen.ScaleX);
+            h = (int)Math.Ceiling(rc.Height * PrimaryScreen.ScaleY);
+            Bitmap ysPic = capture.Capture(x, y, w, h);
+            Rectangle rect = ImageRecognition.CalculateCatchArea(ysPic);
+            //pictureBox1.Image = ysPic;
+            pictureBox1.Image = capture.Capture(x + rect.X, y + rect.Y, rect.Width, rect.Height);
+            //InitAreaWindows(rect);
+        }
+
         private void btnStart_Click(object sender, EventArgs e)
         {
 
-            if (!window.GetHWND())
+            if (!window.FindYSHandle())
             {
                 PrintMsg("未找到原神进程，请先启动原神！");
+                return;
             }
-            x = (int)Math.Ceiling(area.Location.X * PrimaryScreen.ScaleX);
-            y = (int)Math.Ceiling(area.Location.Y * PrimaryScreen.ScaleY);
-            w = (int)Math.Ceiling(area.Width * PrimaryScreen.ScaleX);
-            h = (int)Math.Ceiling(area.Height * PrimaryScreen.ScaleY);
-            area.DragEnabled = false;
-            area.Hide();
 
             window.Focus();
-
             capture.Start();
+            //Thread.Sleep(500);
+
+            //Rectangle rc = window.GetSize();
+            //x = (int)Math.Ceiling(rc.X * PrimaryScreen.ScaleX);
+            //y = (int)Math.Ceiling(rc.Y * PrimaryScreen.ScaleY);
+            //w = (int)Math.Ceiling(rc.Width * PrimaryScreen.ScaleX);
+            //h = (int)Math.Ceiling(rc.Height * PrimaryScreen.ScaleY);
+            //Bitmap ysPic = capture.Capture(x, y, w, h);
+            //// 使用新的坐标
+            //Rectangle rect = ImageRecognition.CalculateCatchArea(ysPic);
+            //x += rect.X;
+            //y += rect.Y;
+            //w = rect.Width;
+            //h = rect.Height;
+            //Bitmap aaa = capture.Capture(x, y, w, h);
+            //pictureBox1.Image = aaa;
+
+            x = 601;
+            y = 135;
+            w = 938;
+            h = 1040;
 
             Thread.Sleep(1000);
 
@@ -157,12 +187,12 @@ namespace GenshinAchievement
             int preCnt = 0;
             while (true)
             {
-                window.MouseMove(x + 10, y + h / 2);
+                window.MouseMove(x, y + h / 2);
                 window.MouseLeftDown();
                 window.MouseLeftUp();
 
                 Bitmap pagePic = capture.Capture(x, y, w, h);
-                pictureBox1.Image = pagePic;
+                //pictureBox1.Image = pagePic;
                 bool succ = ImageRecognition.Split(pagePic, ref achievementList);
                 int pageCount = achievementList.Count - preCnt;
                 PrintMsg($"当前{pageCount}个成就");
@@ -170,13 +200,9 @@ namespace GenshinAchievement
                 while (!succ)
                 {
                     PrintMsg($"分割时发现位置不正确，向上滚动");
-                    window.MouseMove(x + 10, y + h / 2);
-                    window.MouseLeftDown();
-                    window.MouseLeftUp();
-                    window.MouseWheelUp();
-                    Thread.Sleep(50);
+                    ClickAndWheelDown();
                     pagePic = capture.Capture(x, y, w, h);
-                    pictureBox1.Image = pagePic;
+                    //pictureBox1.Image = pagePic;
                     succ = ImageRecognition.Split(pagePic, ref achievementList);
                 }
 
@@ -185,14 +211,10 @@ namespace GenshinAchievement
                 bool preOnePixHightPicIsInRow = false, first = false;
                 while (rowNum <= pageCount && scrollCount < 10)
                 {
-                    Bitmap onePixHightPic = capture.Capture(x, y + FormMotionArea.RowRecOffset, w, 1); // 截取一个1pix的长条
+                    Bitmap onePixHightPic = capture.Capture(x, y, w, 1); // 截取一个1pix的长条
                     if (!first)
                     {
-                        window.MouseMove(x + 10, y + h / 2);
-                        window.MouseLeftDown();
-                        window.MouseLeftUp();
-                        window.MouseWheelDown();
-                        Thread.Sleep(50);
+                        ClickAndWheelDown();
                     }
                     if (ImageRecognition.IsInRow(onePixHightPic))
                     {
@@ -239,6 +261,15 @@ namespace GenshinAchievement
             //timerCapture.Start();
         }
 
+        private void ClickAndWheelDown()
+        {
+            window.MouseMove(x, y + h / 2);
+            window.MouseLeftDown();
+            window.MouseLeftUp();
+            window.MouseWheelDown();
+            Thread.Sleep(50);
+        }
+
         private void PrintMsg(string msg)
         {
             msg = DateTime.Now + " " + msg;
@@ -252,9 +283,17 @@ namespace GenshinAchievement
 
         private void timerCapture_Tick(object sender, EventArgs e)
         {
-
-            //rowNum = 0;
-            timerCapture.Stop();
+            //Rectangle rc = window.GetSize();
+            //x = (int)Math.Ceiling(rc.X * PrimaryScreen.ScaleX);
+            //y = (int)Math.Ceiling(rc.Y * PrimaryScreen.ScaleY);
+            //w = (int)Math.Ceiling(rc.Width * PrimaryScreen.ScaleX);
+            //h = (int)Math.Ceiling(rc.Height * PrimaryScreen.ScaleY);
+            //Bitmap pagePic = capture.Capture(x, y, w, h);
+            //pictureBox1.Image = pagePic;
+            //Rectangle rect = ImageRecognition.CalculateCatchArea(pagePic);
+            //rect.X += x;
+            //rect.Y += y;
+            //capture.Draw(rect);
         }
     }
 }

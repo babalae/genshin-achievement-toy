@@ -33,7 +33,7 @@ namespace GenshinAchievement.Core
         }
 
 
-        private IntPtr hWnd;
+        public IntPtr HWND { get; set; }
         public YuanShenWindow()
         {
 
@@ -50,12 +50,12 @@ namespace GenshinAchievement.Core
             return (IntPtr)((high << 16) | (low & 0xFFFF));
         }
 
-        public bool GetHWND()
+        public bool FindYSHandle()
         {
             var pros = Process.GetProcessesByName("YuanShen");
             if (pros.Any())
             {
-                hWnd = pros[0].MainWindowHandle;
+                HWND = pros[0].MainWindowHandle;
                 return true;
             }
             else
@@ -63,7 +63,7 @@ namespace GenshinAchievement.Core
                 pros = Process.GetProcessesByName("GenshinImpact");
                 if (pros.Any())
                 {
-                    hWnd = pros[0].MainWindowHandle;
+                    HWND = pros[0].MainWindowHandle;
                     return true;
                 }
                 else
@@ -75,13 +75,13 @@ namespace GenshinAchievement.Core
 
         public void Focus()
         {
-            Native.SetForegroundWindow(hWnd);
+            Native.SetForegroundWindow(HWND);
         }
 
         public Rectangle GetSize()
         {
             Native.RECT rc = new Native.RECT();
-            Native.GetWindowRect(hWnd, ref rc);
+            Native.GetWindowRect(HWND, ref rc);
             return new Rectangle(rc.Left, rc.Top, rc.Right - rc.Left, rc.Bottom - rc.Top);
         }
 
@@ -123,9 +123,9 @@ namespace GenshinAchievement.Core
         public void MouseClick(int x, int y)
         {
             IntPtr p = (IntPtr)((y << 16) | x);
-            Native.PostMessage(hWnd, WM_LBUTTONDOWN, IntPtr.Zero, p);
+            Native.PostMessage(HWND, WM_LBUTTONDOWN, IntPtr.Zero, p);
             Thread.Sleep(100);
-            Native.PostMessage(hWnd, WM_LBUTTONUP, IntPtr.Zero, p);
+            Native.PostMessage(HWND, WM_LBUTTONUP, IntPtr.Zero, p);
         }
     }
 }

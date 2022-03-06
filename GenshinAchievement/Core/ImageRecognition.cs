@@ -13,38 +13,69 @@ namespace GenshinAchievement.Core
     {
 
         /// <summary>
-        /// 取指定颜色
+        /// 计算出选区矩形
         /// </summary>
         /// <param name="imgSrc"></param>
         /// <returns></returns>
-        public static Bitmap HighlightPic(Bitmap imgSrc)
+        public static Rectangle CalculateCatchArea(Bitmap imgSrc)
         {
-            Bitmap bitmap = new Bitmap(imgSrc.Width, imgSrc.Height);
+            //Bitmap bitmap = new Bitmap(imgSrc.Width, imgSrc.Height);
 
             BitmapData data = imgSrc.LockBits(new Rectangle(0, 0, imgSrc.Width, imgSrc.Height), ImageLockMode.ReadWrite, PixelFormat.Format24bppRgb);
 
+            List<Rectangle> lines = new List<Rectangle>();
             unsafe
             {
                 byte* ptr = (byte*)(data.Scan0);
-                for (int i = 0; i < data.Height; i++)
+                for (int y = 0; y < data.Height; y++)
                 {
-                    for (int j = 0; j < data.Width; j++)
+                    int s = 0;
+                    bool pre = false;
+                    Rectangle rect = Rectangle.Empty; // 每一行只有宽度大于 原神界面宽度 1/2 的才保留
+                    for (int x = 0; x < data.Width; x++)
                     {
-                        // write the logic implementation here
                         ptr += 3;
                         byte b = ptr[0], g = ptr[1], r = ptr[2];
-                        if (Math.Abs(r - 200) <= 20 && Math.Abs(g - 140) <= 15 && Math.Abs(b - 70) <= 10
-                            || Math.Abs(r - 109) <= 2 && Math.Abs(g - 100) <= 2 && Math.Abs(b - 93) <= 2)
-                        //if (r == 224 && g == 214 && b == 203)
+                        if (Math.Abs(r - 235) <= 10 && Math.Abs(g - 225) <= 10 && Math.Abs(b - 225) <= 10)
                         {
-                            bitmap.SetPixel(j, i, Color.White);
+                            if (!pre)
+                            {
+                                if (rect != Rectangle.Empty && rect.Width > data.Width / 2)
+                                {
+                                    continue; // 直接放弃后续所有
+                                }
+                                else
+                                {
+                                    rect = new Rectangle(x, y, 1, 1);
+                                }
+                            }
+                            rect.Width++;
+                            pre = true;
                         }
+                        else
+                        {
+                            pre = false;
+                        }
+                    }
+                    // 每一行符合的都存入list
+                    if (rect != Rectangle.Empty && rect.Width > data.Width / 2)
+                    {
+                        lines.Add(rect);
                     }
                     ptr += data.Stride - data.Width * 3;
                 }
             }
             imgSrc.UnlockBits(data);
-            return bitmap;
+
+            if (lines.Count >= 2)
+            {
+                Rectangle rect = new Rectangle(lines[0].X, lines[0].Y,
+                    lines[0].Width, lines[lines.Count - 1].Y - lines[0].Y);
+                Graphics g = Graphics.FromImage(imgSrc);
+                g.DrawRectangle(new Pen(Color.Red), rect);
+                return rect;
+            }
+            return Rectangle.Empty;
         }
 
         public static Bitmap HighlightBorder(Bitmap imgSrc)

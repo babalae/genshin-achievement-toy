@@ -15,6 +15,12 @@ namespace GenshinAchievement.Core
             hdc = Native.GetDC(hwnd);
         }
 
+        //public void Draw(Rectangle rect)
+        //{
+        //    Graphics g = Graphics.FromHdc(hdc);
+        //    g.DrawRectangle(new Pen(Color.Red), rect);
+        //}
+
         public Bitmap Capture(int x, int y, int w, int h)
         {
             Bitmap bmp = new Bitmap(w, h);

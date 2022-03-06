@@ -4,7 +4,7 @@ using System.Runtime.InteropServices;
 
 namespace GenshinAchievement.Utils
 {
-    class PrimaryScreen
+    public class PrimaryScreen
     {
         #region Win32 API
         [DllImport("user32.dll")]
@@ -113,5 +113,13 @@ namespace GenshinAchievement.Utils
             }
         }
         #endregion
+
+        public static Rectangle Transform(Rectangle rect)
+        {
+            return new Rectangle((int)Math.Ceiling(rect.X * ScaleX),
+                (int)Math.Ceiling(rect.Y * ScaleY),
+                (int)Math.Ceiling(rect.Width * ScaleX),
+                (int)Math.Ceiling(rect.Height * ScaleY));
+        }
     }
 }

@@ -61,11 +61,11 @@ namespace GenshinAchievement.Properties {
         }
         
         /// <summary>
-        ///   查找类似 {&quot;0&quot;:{&quot;name&quot;:&quot;天地万象&quot;,&quot;achievements&quot;:[{&quot;id&quot;:80091,&quot;name&quot;:&quot;妖鬼狂言百物语&quot;,&quot;desc&quot;:&quot;集齐全套《鹮巷物语》。&quot;,&quot;reward&quot;:5,&quot;ver&quot;:&quot;2.0&quot;},[{&quot;id&quot;:80127,&quot;name&quot;:&quot;「是想要驯服我吗？」&quot;,&quot;desc&quot;:&quot;使用道具「四方八方之网」捕获1只野外生物。&quot;,&quot;reward&quot;:5,&quot;ver&quot;:&quot;2.3&quot;},{&quot;id&quot;:80128,&quot;name&quot;:&quot;天赐的猎人之手&quot;,&quot;desc&quot;:&quot;使用道具「四方八方之网」捕获30只野外生物。&quot;,&quot;reward&quot;:10,&quot;ver&quot;:&quot;2.3&quot;},{&quot;id&quot;:80129,&quot;name&quot;:&quot;动物园大亨&quot;,&quot;desc&quot;:&quot;使用道具「四方八方之网」捕获100只野外生物。&quot;,&quot;reward&quot;:20,&quot;ver&quot;:&quot;2.3&quot;}],{&quot;id&quot;:81000,&quot;name&quot;:&quot;俯瞰风景&quot;,&quot;desc&quot;:&quot;抵达庆云顶的制高点。&quot;,&quot;reward&quot;:5,&quot;ver&quot;:&quot;1.0&quot;},{&quot;id&quot;:81001,&quot;name&quot;:&quot;烈风的遗骨&quot;,&quot;desc&quot;:&quot;登上风龙废墟的高塔顶端。&quot;,&quot;reward&quot;:5,&quot;ver&quot;:&quot... 的本地化字符串。
+        ///   查找类似 {&quot;心跳的记忆&quot;:[{&quot;id&quot;:&quot;84026&quot;,&quot;ver&quot;:&quot;1.4&quot;,&quot;name&quot;:&quot;美妙旅程：序&quot;,&quot;desc&quot;:&quot;完成「美妙旅程」，解锁全部结局。&quot;,&quot;reward&quot;:&quot;20&quot;},{&quot;id&quot;:&quot;84100&quot;,&quot;ver&quot;:&quot;1.4&quot;,&quot;name&quot;:&quot;霹雳闪雷真君&quot;,&quot;desc&quot;:&quot;见证班尼特足以影响天气的厄运。&quot;,&quot;reward&quot;:&quot;5&quot;},{&quot;id&quot;:&quot;84101&quot;,&quot;ver&quot;:&quot;1.4&quot;,&quot;name&quot;:&quot;运气即实力！&quot;,&quot;desc&quot;:&quot;在不失误的情况下解开机关，取得宝藏。&quot;,&quot;reward&quot;:&quot;5&quot;},{&quot;id&quot;:&quot;84104&quot;,&quot;ver&quot;:&quot;1.4&quot;,&quot;name&quot;:&quot;诸邪退散&quot;,&quot;desc&quot;:&quot;完成「寻妖觅邪记」，解锁全部结局。&quot;,&quot;reward&quot;:&quot;20&quot;},{&quot;id&quot;:&quot;84028&quot;,&quot;ver&quot;:&quot;1.4&quot;,&quot;name&quot;:&quot;慧眼识妖！&quot;,&quot;desc&quot;:&quot;正确鉴定所有情报。&quot;,&quot;reward&quot;:&quot;5&quot;},{&quot;id&quot;:&quot;84107&quot;,&quot;ver&quot;:&quot;1.4&quot;,&quot;name&quot;:&quot;辣椒英雄&quo... 的本地化字符串。
         /// </summary>
-        internal static string PaimonMoeAchievementJson {
+        internal static string AchievementJson {
             get {
-                return ResourceManager.GetString("PaimonMoeAchievementJson", resourceCulture);
+                return ResourceManager.GetString("AchievementJson", resourceCulture);
             }
         }
     }

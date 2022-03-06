@@ -11,45 +11,29 @@ namespace GenshinAchievement.Model
 {
     class PaimonMoeJson
     {
-        public Dictionary<string, AchievementsType> All { get; set; }
+        public Dictionary<string, List<ExistAchievement>> All { get; set; }
 
         public static PaimonMoeJson Builder()
         {
             PaimonMoeJson paimonMoe = new PaimonMoeJson();
             JavaScriptSerializer serializer = new JavaScriptSerializer();
-            paimonMoe.All = serializer.Deserialize<Dictionary<string, AchievementsType>>(Properties.Resources.PaimonMoeAchievementJson);
+            paimonMoe.All = serializer.Deserialize<Dictionary<string, List<ExistAchievement>>>(Properties.Resources.AchievementJson);
             return paimonMoe;
         }
 
-        public ExistAchievement Matching(string type, OcrAchievement ocrAchievement)
+        public ExistAchievement Matching(string edition, OcrAchievement ocrAchievement)
         {
             double max = 0;
             ExistAchievement maxMatch = null;
-            foreach (object o in All[type].achievements)
+            foreach (ExistAchievement existAchievement in All[edition])
             {
-                if (o is Dictionary<string, object>)
+                double n = Matching(ocrAchievement, existAchievement);
+                if (n > max)
                 {
-                    ExistAchievement existAchievement = ExistAchievement.Init(o as Dictionary<string, object>);
-                    double n = Matching(ocrAchievement, existAchievement);
-                    if (n > max)
-                    {
-                        max = n;
-                        maxMatch = existAchievement;
-                    }
+                    max = n;
+                    maxMatch = existAchievement;
                 }
-                else if (o is Array)
-                {
-                    foreach (object a in o as Array)
-                    {
-                        ExistAchievement existAchievement = ExistAchievement.Init(a as Dictionary<string, object>);
-                        double n = Matching(ocrAchievement, existAchievement);
-                        if (n > max)
-                        {
-                            max = n;
-                            maxMatch = existAchievement;
-                        }
-                    }
-                }
+
             }
             if (max > 0.6 && maxMatch != null)
             {

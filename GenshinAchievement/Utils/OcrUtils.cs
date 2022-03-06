@@ -31,7 +31,7 @@ namespace GenshinAchievement.Utils
             string context = "";
             foreach (OcrAchievement a in achievementList)
             {
-                paimonMoeJson.Matching("0", a);
+                paimonMoeJson.Matching("天地万象", a);
                 a.Image = null;
                 //context += $"------------------\n";
                 //context += $"{a.ImagePath}\n";

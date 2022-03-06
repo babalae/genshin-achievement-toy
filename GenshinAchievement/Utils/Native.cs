@@ -146,5 +146,13 @@ namespace GenshinAchievement.Utils
 
         [DllImport("user32.dll")]
         public static extern int SetForegroundWindow(IntPtr hwnd);
+
+        [DllImport("user32.dll")]
+        public static extern bool PrintWindow(
+                 IntPtr hwnd,               // Window to copy,Handle to the window that will be copied. 
+                 IntPtr hdcBlt,             // HDC to print into,Handle to the device context. 
+                 UInt32 nFlags              // Optional flags,Specifies the drawing options. It can be one of the following values. 
+                 );
+
     }
 }

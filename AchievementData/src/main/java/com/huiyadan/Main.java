@@ -15,9 +15,8 @@ import org.apache.commons.lang.StringUtils;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * 一个用于生成期望json数据的辅助程序
@@ -34,12 +33,20 @@ public class Main {
         List<TargetVo> listFromExcel = ExcelVo.toTargetVo(excelVoList);
         System.out.println("载入excel数据量：" + listFromExcel.size());
 
+        // 按特辑分类
+        Map<String, List<TargetVo>> map = listFromJson.stream().collect(Collectors.groupingBy(TargetVo::getEdition, Collectors.toList()));
+        for (Map.Entry<String, List<TargetVo>> stringListEntry : map.entrySet()) {
+            for (TargetVo targetVo : stringListEntry.getValue()) {
+                targetVo.setEdition(null);
+            }
+        }
+        System.out.println(objectMapper.writeValueAsString(map));
         //  校验数据
         Iterator<TargetVo> it = listFromExcel.iterator();
         while (it.hasNext()) {
             TargetVo voFromExcel = it.next();
             for (TargetVo voFromJson : listFromJson) {
-                if(StringUtils.isBlank(voFromExcel.getId())) {
+                if (StringUtils.isBlank(voFromExcel.getId())) {
                     it.remove();
                 } else {
                     if (voFromExcel.getId().equals(voFromJson.getId())) {
@@ -51,8 +58,8 @@ public class Main {
         }
 
         // 查看校验结果
-        printCheckResult(listFromExcel);
-        printCheckResult(listFromJson);
+//        printCheckResult(listFromExcel);
+//        printCheckResult(listFromJson);
 
 //        Writer.create()
 //                .withRows(listFromExcel)
@@ -62,7 +69,7 @@ public class Main {
 //                .to(new File("data/结果22.xlsx"));
 
 
-        System.out.println(objectMapper.writeValueAsString(listFromJson));
+//        System.out.println(objectMapper.writeValueAsString(listFromJson));
     }
 
     static void printCheckResult(List<TargetVo> list) throws Exception {
