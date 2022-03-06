@@ -21,59 +21,49 @@ namespace GenshinAchievement
 
         private ImageCapture capture = new ImageCapture();
 
-        private FormMotionArea area;
-
         private YuanShenWindow window = new YuanShenWindow();
 
         int x, y, w, h;
 
+        string userDataPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "UserData");
+
+        PaimonMoeJson paimonMoeJson = PaimonMoeJson.Builder();
 
         public FormMain()
         {
             InitializeComponent();
         }
 
+        private bool YSStatus()
+        {
+            if (window.FindYSHandle())
+            {
+                lblYSStatus.ForeColor = Color.Green;
+                lblYSStatus.Text = "已启动";
+                return true;
+            }
+            else
+            {
+                lblYSStatus.ForeColor = Color.Red;
+                lblYSStatus.Text = "未启动";
+                return false;
+            }
+        }
+
         private void FormMain_Load(object sender, EventArgs e)
         {
-
-
-            //TestScreen();
-            //using (var ocr = new TesseractEngine(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "tessdata"), "chi_sim", EngineMode.Default))
-            //{
-            //    var pix = PixConverter.ToPix(new Bitmap(@"D:\HuiTask\原神成就导出\测试图片1.png"));
-            //    using (var page = ocr.Process(pix))
-            //    {
-            //        string text = page.GetText();
-            //        PrintMsg(text);
-            //    }
-            //}
-
-            //ImageRecognition.HighlightPic(new Bitmap(@"D:\HuiPrograming\Projects\CSharp\GenshinAchievement\GenshinAchievement\bin\Debug\10.png")).Save(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "11.png"));
-            //ImageRecognition.HighlightBorder(new Bitmap(@"D:\HuiTask\原神成就导出\测试图片1.png")).Save(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "3.png"));
-
-            //List<Achievement> list = ImageRecognition.Split(new Bitmap(@"D:\HuiTask\原神成就导出\测试图片1.png"));
-            //foreach (Achievement a in list)
-            //{
-            //    a.Split();
-            //    a.Image.Save(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "testout", a.Index + ".png"));
-
-            //}
-
-            //capture.Start();
-            //timerCapture.Start();
-
-            //if (window.FindYSHandle())
-            //{
-            //    capture.Start();
-            //    //timerCapture.Start();
-            //}
-
+            YSStatus();
+            foreach (var item in paimonMoeJson.All)
+            {
+                cboEdition.Items.Add(item.Key);
+            }
+            cboEdition.Text = "天地万象";
         }
 
         private List<OcrAchievement> TestLocalAchievementPic()
         {
             List<OcrAchievement> list = new List<OcrAchievement>();
-            DirectoryInfo dir = new DirectoryInfo(@"testout");
+            DirectoryInfo dir = new DirectoryInfo(Path.Combine(userDataPath, cboEdition.Text + "_img"));
             FileInfo[] fileInfo = dir.GetFiles();
             foreach (FileInfo item in fileInfo)
             {
@@ -85,33 +75,8 @@ namespace GenshinAchievement
             return list;
         }
 
-        private void InitAreaWindows(Rectangle rect)
-        {
-            if (area == null)
-            {
-                area = new FormMotionArea();
-                area.FormMainInstance = this;
-            }
-            area.Location = new Point(rect.X, rect.Y);
-            area.Size = new Size(rect.Width, rect.Height);
-            area.Show();
-
-            //if (Properties.Settings.Default.AreaLocation.X >= 0 && Properties.Settings.Default.AreaLocation.Y >= 0)
-            //{
-            //    area.Location = Properties.Settings.Default.AreaLocation;
-            //}
-            //area.Size = Properties.Settings.Default.AreaSize;
-        }
-
         private void FormMain_FormClosed(object sender, FormClosedEventArgs e)
         {
-            if (area != null)
-            {
-                Properties.Settings.Default.AreaLocation = area.Location;
-                Properties.Settings.Default.AreaSize = area.Size;
-                Properties.Settings.Default.Save();
-                area.Close();
-            }
 
         }
 
@@ -124,7 +89,7 @@ namespace GenshinAchievement
 
         private void btnAutoArea_Click(object sender, EventArgs e)
         {
-            if (!window.FindYSHandle())
+            if (!YSStatus())
             {
                 PrintMsg("未找到原神进程，请先启动原神！");
                 return;
@@ -148,61 +113,66 @@ namespace GenshinAchievement
         private void btnStart_Click(object sender, EventArgs e)
         {
 
-            if (!window.FindYSHandle())
+            if (!YSStatus())
             {
                 PrintMsg("未找到原神进程，请先启动原神！");
                 return;
             }
+            cboEdition.Enabled = false;
+            IOUtils.CreateFolder(userDataPath);
 
             window.Focus();
             capture.Start();
-            //Thread.Sleep(500);
+            Thread.Sleep(200);
 
-            //Rectangle rc = window.GetSize();
-            //x = (int)Math.Ceiling(rc.X * PrimaryScreen.ScaleX);
-            //y = (int)Math.Ceiling(rc.Y * PrimaryScreen.ScaleY);
-            //w = (int)Math.Ceiling(rc.Width * PrimaryScreen.ScaleX);
-            //h = (int)Math.Ceiling(rc.Height * PrimaryScreen.ScaleY);
-            //Bitmap ysPic = capture.Capture(x, y, w, h);
-            //// 使用新的坐标
-            //Rectangle rect = ImageRecognition.CalculateCatchArea(ysPic);
-            //x += rect.X;
-            //y += rect.Y;
-            //w = rect.Width;
-            //h = rect.Height;
-            //Bitmap aaa = capture.Capture(x, y, w, h);
-            //pictureBox1.Image = aaa;
+            Rectangle rc = window.GetSize();
+            x = (int)Math.Ceiling(rc.X * PrimaryScreen.ScaleX);
+            y = (int)Math.Ceiling(rc.Y * PrimaryScreen.ScaleY);
+            w = (int)Math.Ceiling(rc.Width * PrimaryScreen.ScaleX);
+            h = (int)Math.Ceiling(rc.Height * PrimaryScreen.ScaleY);
+            Bitmap ysPic = capture.Capture(x, y, w, h);
+            // 使用新的坐标
+            Rectangle rect = ImageRecognition.CalculateCatchArea(ysPic);
+            x += rect.X;
+            y += rect.Y;
+            w = rect.Width + 2;
+            h = rect.Height;
+            pictureBox1.Image = capture.Capture(x, y, w, h);
 
-            x = 601;
-            y = 135;
-            w = 938;
-            h = 1040;
 
-            Thread.Sleep(1000);
+            Thread.Sleep(500);
 
 
             List<OcrAchievement> achievementList = new List<OcrAchievement>();
 
             int n = 0;
             int preCnt = 0;
+            //int zeroNum = 0;
             while (true)
             {
-                window.MouseMove(x, y + h / 2);
-                window.MouseLeftDown();
-                window.MouseLeftUp();
+                YSClick();
 
                 Bitmap pagePic = capture.Capture(x, y, w, h);
-                //pictureBox1.Image = pagePic;
+                pictureBox1.Image = pagePic;
                 bool succ = ImageRecognition.Split(pagePic, ref achievementList);
                 int pageCount = achievementList.Count - preCnt;
                 PrintMsg($"当前{pageCount}个成就");
                 preCnt = achievementList.Count;
+                //if(pageCount == 0)
+                //{
+                //    if(zeroNum++ > 5)
+                //    {
+                //        break;
+                //    }
+                //}
                 while (!succ)
                 {
                     PrintMsg($"分割时发现位置不正确，向上滚动");
-                    ClickAndWheelDown();
+                    YSClick();
+                    window.MouseWheelUp();
+                    Thread.Sleep(50);
                     pagePic = capture.Capture(x, y, w, h);
-                    //pictureBox1.Image = pagePic;
+                    pictureBox1.Image = pagePic;
                     succ = ImageRecognition.Split(pagePic, ref achievementList);
                 }
 
@@ -211,14 +181,16 @@ namespace GenshinAchievement
                 bool preOnePixHightPicIsInRow = false, first = false;
                 while (rowNum <= pageCount && scrollCount < 10)
                 {
-                    Bitmap onePixHightPic = capture.Capture(x, y, w, 1); // 截取一个1pix的长条
+                    Bitmap onePixHightPic = capture.Capture(x, y + 15, w, 1); // 截取一个1pix的长条
                     if (!first)
                     {
-                        ClickAndWheelDown();
+                        YSClick();
+                        window.MouseWheelDown();
+                        Thread.Sleep(50);
                     }
                     if (ImageRecognition.IsInRow(onePixHightPic))
                     {
-                        PrintMsg($"在行内");
+                        //PrintMsg($"在行内");
                         if (!preOnePixHightPicIsInRow)
                         {
                             PrintMsg($"进入第{rowNum}行");
@@ -227,7 +199,7 @@ namespace GenshinAchievement
                     }
                     else
                     {
-                        PrintMsg($"在行外");
+                        //PrintMsg($"在行外");
                         if (preOnePixHightPicIsInRow)
                         {
                             PrintMsg($"离开第{rowNum}行");
@@ -246,28 +218,25 @@ namespace GenshinAchievement
                 }
 
                 n++;
-                //if (n == 2)
-                //{
-                //    break;
-                //}
             }
 
+            string imgPath = Path.Combine(userDataPath, cboEdition.Text + "_img");
+            IOUtils.CreateFolder(imgPath);
+            IOUtils.DeleteFolder(imgPath);
             foreach (OcrAchievement a in achievementList)
             {
                 a.Split();
-                a.Image.Save(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "testout", a.Index + ".png"));
+                a.Image.Save(Path.Combine(imgPath, a.Index + ".png"));
             }
             PrintMsg($"文件写入完成");
-            //timerCapture.Start();
+            cboEdition.Enabled = true;
         }
 
-        private void ClickAndWheelDown()
+        private void YSClick()
         {
             window.MouseMove(x, y + h / 2);
             window.MouseLeftDown();
             window.MouseLeftUp();
-            window.MouseWheelDown();
-            Thread.Sleep(50);
         }
 
         private void PrintMsg(string msg)
@@ -283,17 +252,7 @@ namespace GenshinAchievement
 
         private void timerCapture_Tick(object sender, EventArgs e)
         {
-            //Rectangle rc = window.GetSize();
-            //x = (int)Math.Ceiling(rc.X * PrimaryScreen.ScaleX);
-            //y = (int)Math.Ceiling(rc.Y * PrimaryScreen.ScaleY);
-            //w = (int)Math.Ceiling(rc.Width * PrimaryScreen.ScaleX);
-            //h = (int)Math.Ceiling(rc.Height * PrimaryScreen.ScaleY);
-            //Bitmap pagePic = capture.Capture(x, y, w, h);
-            //pictureBox1.Image = pagePic;
-            //Rectangle rect = ImageRecognition.CalculateCatchArea(pagePic);
-            //rect.X += x;
-            //rect.Y += y;
-            //capture.Draw(rect);
+
         }
     }
 }

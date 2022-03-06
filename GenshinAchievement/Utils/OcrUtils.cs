@@ -43,6 +43,29 @@ namespace GenshinAchievement.Utils
             {
                 sw.WriteLine(context);
             }
+
+            string paimonMoeJsItem = "";
+            foreach (ExistAchievement existAchievement in paimonMoeJson.All["天地万象"])
+            {
+                if(existAchievement.done)
+                {
+                    paimonMoeJsItem += $"[0,{existAchievement.id}],";
+                }
+            }
+            if(paimonMoeJsItem.EndsWith(","))
+            {
+                paimonMoeJsItem.Substring(paimonMoeJsItem.Length - 2, 1);
+            }
+            string paimonMoeJs = "const b = [" + paimonMoeJsItem + @"];
+const a = (await localforage.getItem('achievement')) || { };
+            b.forEach(c => { a[c[0]] = a[c[0]] ||{ }; a[c[0]][c[1]] = true})
+await localforage.setItem('achievement', a);
+            location.href = '/achievement'";
+
+            using (StreamWriter sw = new StreamWriter(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "js.txt"), false))
+            {
+                sw.WriteLine(paimonMoeJs);
+            }
         }
 
         public static async Task<OcrResult> RecognizeAsync(string path, OcrEngine engine)

@@ -38,6 +38,7 @@ namespace GenshinAchievement.Model
             if (max > 0.6 && maxMatch != null)
             {
                 ocrAchievement.Match = maxMatch;
+                maxMatch.done = true;
             }
             else
             {

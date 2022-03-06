@@ -113,11 +113,10 @@ namespace GenshinAchievement.Model
             }
 
             // 严格识别不到，就默认第一行
-            if (string.IsNullOrEmpty(OcrAchievementName))
+            if (string.IsNullOrEmpty(OcrAchievementName) && ocrResult.Lines.Count > 0)
             {
                 OcrAchievementName = OcrUtils.LineString(ocrResult.Lines[0]);
             }
-            OcrAchievementName = OcrUtils.LineString(ocrResult.Lines[0]);
             return OcrText;
         }
     }

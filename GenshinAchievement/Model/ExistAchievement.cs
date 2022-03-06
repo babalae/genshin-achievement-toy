@@ -16,5 +16,8 @@ namespace GenshinAchievement.Model
         public int reward;
         public string ver;
         public List<string> levels;
+
+        /** 非json字段 **/
+        public bool done;
     }
 }
