@@ -57,19 +57,19 @@ namespace GenshinAchievement
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message, "错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(ex.Message + Environment.NewLine + ex.StackTrace, "错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
 #endif
         }
 
         static void Application_ThreadException(object sender, System.Threading.ThreadExceptionEventArgs e)
         {
-            MessageBox.Show(e.Exception.Message, "错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            MessageBox.Show(e.Exception.Message + Environment.NewLine + e.Exception.StackTrace, "错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
 
         static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
         {
-            MessageBox.Show((e.ExceptionObject as Exception).Message, "错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            MessageBox.Show((e.ExceptionObject as Exception).StackTrace + Environment.NewLine + (e.ExceptionObject as Exception).StackTrace, "错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
     }
 }

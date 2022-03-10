@@ -176,6 +176,61 @@ namespace GenshinAchievement.Core
             return true;
         }
 
+        public static List<Bitmap> Split(Bitmap imgSrc)
+        {
+            BitmapData data = imgSrc.LockBits(new Rectangle(0, 0, imgSrc.Width, imgSrc.Height), ImageLockMode.ReadWrite, PixelFormat.Format24bppRgb);
+
+            List<int> yList = new List<int>();
+            unsafe
+            {
+                byte* ptr = (byte*)(data.Scan0);
+                for (int y = 0; y < data.Height; y++)
+                {
+                    int s = 0;
+                    for (int x = 0; x < data.Width; x++)
+                    {
+                        // write the logic implementation here
+                        ptr += 3;
+                        byte b = ptr[0], g = ptr[1], r = ptr[2];
+                        if (r == 224 && g == 214 && b == 203)
+                        {
+                            s++;
+                        }
+                    }
+                    if (s * 1.0 / data.Width > 0.8)
+                    {
+                        yList.Add(y);
+                    }
+                    ptr += data.Stride - data.Width * 3;
+                }
+            }
+            imgSrc.UnlockBits(data);
+
+            List<Bitmap> list = new List<Bitmap>();
+            if (yList.Count >= 2)
+            {
+                for (int i = 1; i < yList.Count; i++)
+                {
+                    int h = yList[i] - yList[i - 1];
+                    if (h > 10)
+                    {
+                        list.Add(CreateNewBitmap(imgSrc, 0, yList[i], imgSrc.Width, h));
+                    }
+                }
+            }
+            return list;
+        }
+
+        public static Bitmap CreateNewBitmap(Bitmap imgSrc, int x, int y, int w, int h)
+        {
+            Bitmap img = new Bitmap(w, h, PixelFormat.Format24bppRgb);
+            using (Graphics g = Graphics.FromImage(img))
+            {
+                g.DrawImage(img, new Rectangle(0, 0, w, h), x, y, w, h, GraphicsUnit.Pixel);
+            }
+            return img;
+        }
+
 
         public static bool IsInRow(Bitmap imgSrc)
         {

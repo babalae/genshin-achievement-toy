@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -229,6 +230,87 @@ namespace GenshinAchievement
                 a.Image.Save(Path.Combine(imgPath, a.Index + ".png"));
             }
             PrintMsg($"文件写入完成");
+            cboEdition.Enabled = true;
+        }
+
+        private async void btnStart2_Click(object sender, EventArgs e)
+        {
+            if (!YSStatus())
+            {
+                PrintMsg("未找到原神进程，请先启动原神！");
+                return;
+            }
+            cboEdition.Enabled = false;
+            IOUtils.CreateFolder(userDataPath);
+
+            window.Focus();
+            capture.Start();
+            Thread.Sleep(200);
+
+            Rectangle rc = window.GetSize();
+            x = (int)Math.Ceiling(rc.X * PrimaryScreen.ScaleX);
+            y = (int)Math.Ceiling(rc.Y * PrimaryScreen.ScaleY);
+            w = (int)Math.Ceiling(rc.Width * PrimaryScreen.ScaleX);
+            h = (int)Math.Ceiling(rc.Height * PrimaryScreen.ScaleY);
+            Bitmap ysPic = capture.Capture(x, y, w, h);
+            // 使用新的坐标
+            Rectangle rect = ImageRecognition.CalculateCatchArea(ysPic);
+            x += rect.X;
+            y += rect.Y;
+            w = rect.Width + 2;
+            h = rect.Height;
+            pictureBox1.Image = capture.Capture(x, y, w, h);
+
+
+            Thread.Sleep(500);
+            YSClick();
+
+            string imgPath = Path.Combine(userDataPath, cboEdition.Text + "_img_temp");
+            string imgPath2 = Path.Combine(userDataPath, cboEdition.Text + "_img");
+            IOUtils.CreateFolder(imgPath);
+            IOUtils.DeleteFolder(imgPath);
+            IOUtils.CreateFolder(imgPath2);
+            IOUtils.DeleteFolder(imgPath2);
+
+            await Task.Run(() =>
+            {
+                int rowIn = 0, rowOut = 0, n = 0;
+                //Bitmap pagePic = null;
+                while (rowIn < 15 && rowOut < 15)
+                {
+                    Bitmap pagePic = capture.Capture(x, y, w, h);
+                    if (n % 20 == 0)
+                    {
+                        pagePic.Save(Path.Combine(imgPath, n + ".png"));
+                        PrintMsg($"{n}写入文件");
+                    }
+
+                    //List<Bitmap> list = ImageRecognition.Split(pagePic);
+                    //for (int i = 0; i < list.Count; i++)
+                    //{
+                    //    list[i].Save(Path.Combine(imgPath2, n + "_" + i + ".png"));
+                    //}
+
+                    Bitmap onePixHightPic = capture.Capture(x, y + 20, w, 1); // 截取一个1pix的长条
+                    if (ImageRecognition.IsInRow(onePixHightPic))
+                    {
+                        rowIn++;
+                        rowOut = 0;
+                    }
+                    else
+                    {
+                        rowIn = 0;
+                        rowOut++;
+                    }
+                    //pictureBox1.Image = pagePic;
+                    YSClick();
+                    window.MouseWheelDown();
+                    n++;
+                }
+                //Bitmap lastPagePic = capture.Capture(x, y, w, h);
+                //lastPagePic.Save(Path.Combine(imgPath, ++n + ".png"));
+                PrintMsg($"文件写入完成");
+            });
             cboEdition.Enabled = true;
         }
 

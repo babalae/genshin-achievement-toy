@@ -49,6 +49,7 @@ namespace GenshinAchievement
             this.button1 = new System.Windows.Forms.Button();
             this.label3 = new System.Windows.Forms.Label();
             this.linkLabel1 = new System.Windows.Forms.LinkLabel();
+            this.btnStart2 = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -169,6 +170,7 @@ namespace GenshinAchievement
             // 
             // groupBox3
             // 
+            this.groupBox3.Controls.Add(this.btnStart2);
             this.groupBox3.Controls.Add(this.btnAutoArea);
             this.groupBox3.Controls.Add(this.btnOCR);
             this.groupBox3.Location = new System.Drawing.Point(363, 51);
@@ -237,6 +239,16 @@ namespace GenshinAchievement
             this.linkLabel1.TabStop = true;
             this.linkLabel1.Text = "点我打开说明文档";
             // 
+            // btnStart2
+            // 
+            this.btnStart2.Location = new System.Drawing.Point(6, 102);
+            this.btnStart2.Name = "btnStart2";
+            this.btnStart2.Size = new System.Drawing.Size(147, 37);
+            this.btnStart2.TabIndex = 10;
+            this.btnStart2.Text = "滚动截屏方案2";
+            this.btnStart2.UseVisualStyleBackColor = true;
+            this.btnStart2.Click += new System.EventHandler(this.btnStart2_Click);
+            // 
             // FormMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 18F);
@@ -286,6 +298,7 @@ namespace GenshinAchievement
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.LinkLabel linkLabel1;
+        private System.Windows.Forms.Button btnStart2;
     }
 }
 
