@@ -29,11 +29,8 @@ namespace GenshinAchievement
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
             this.rtbConsole = new System.Windows.Forms.RichTextBox();
             this.btnStart = new System.Windows.Forms.Button();
-            this.pictureBox1 = new System.Windows.Forms.PictureBox();
-            this.timerCapture = new System.Windows.Forms.Timer(this.components);
             this.btnOCR = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
             this.lblYSStatus = new System.Windows.Forms.Label();
@@ -45,12 +42,10 @@ namespace GenshinAchievement
             this.groupBox3 = new System.Windows.Forms.GroupBox();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
             this.button3 = new System.Windows.Forms.Button();
-            this.button2 = new System.Windows.Forms.Button();
-            this.button1 = new System.Windows.Forms.Button();
+            this.btnExport2 = new System.Windows.Forms.Button();
+            this.btnExport1 = new System.Windows.Forms.Button();
             this.label3 = new System.Windows.Forms.Label();
             this.linkLabel1 = new System.Windows.Forms.LinkLabel();
-            this.btnStart2 = new System.Windows.Forms.Button();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -74,19 +69,6 @@ namespace GenshinAchievement
             this.btnStart.Text = "识别成就";
             this.btnStart.UseVisualStyleBackColor = true;
             this.btnStart.Click += new System.EventHandler(this.btnStart_Click);
-            // 
-            // pictureBox1
-            // 
-            this.pictureBox1.Location = new System.Drawing.Point(362, 269);
-            this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(322, 348);
-            this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.pictureBox1.TabIndex = 4;
-            this.pictureBox1.TabStop = false;
-            // 
-            // timerCapture
-            // 
-            this.timerCapture.Tick += new System.EventHandler(this.timerCapture_Tick);
             // 
             // btnOCR
             // 
@@ -128,7 +110,7 @@ namespace GenshinAchievement
             this.groupBox1.Size = new System.Drawing.Size(344, 106);
             this.groupBox1.TabIndex = 9;
             this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "第一步：启动原神并切换到成就页面";
+            this.groupBox1.Text = "第一步：启动原神并打开成就页面";
             // 
             // label2
             // 
@@ -170,12 +152,11 @@ namespace GenshinAchievement
             // 
             // groupBox3
             // 
-            this.groupBox3.Controls.Add(this.btnStart2);
             this.groupBox3.Controls.Add(this.btnAutoArea);
             this.groupBox3.Controls.Add(this.btnOCR);
             this.groupBox3.Location = new System.Drawing.Point(363, 51);
             this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(322, 212);
+            this.groupBox3.Size = new System.Drawing.Size(163, 566);
             this.groupBox3.TabIndex = 11;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "高级功能";
@@ -183,8 +164,8 @@ namespace GenshinAchievement
             // groupBox4
             // 
             this.groupBox4.Controls.Add(this.button3);
-            this.groupBox4.Controls.Add(this.button2);
-            this.groupBox4.Controls.Add(this.button1);
+            this.groupBox4.Controls.Add(this.btnExport2);
+            this.groupBox4.Controls.Add(this.btnExport1);
             this.groupBox4.Location = new System.Drawing.Point(12, 269);
             this.groupBox4.Name = "groupBox4";
             this.groupBox4.Size = new System.Drawing.Size(344, 161);
@@ -201,23 +182,25 @@ namespace GenshinAchievement
             this.button3.Text = "查看未完成的成就";
             this.button3.UseVisualStyleBackColor = true;
             // 
-            // button2
+            // btnExport2
             // 
-            this.button2.Location = new System.Drawing.Point(22, 109);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(310, 35);
-            this.button2.TabIndex = 1;
-            this.button2.Text = "导出到 seelie.me";
-            this.button2.UseVisualStyleBackColor = true;
+            this.btnExport2.Location = new System.Drawing.Point(22, 109);
+            this.btnExport2.Name = "btnExport2";
+            this.btnExport2.Size = new System.Drawing.Size(310, 35);
+            this.btnExport2.TabIndex = 1;
+            this.btnExport2.Text = "导出到 seelie.me";
+            this.btnExport2.UseVisualStyleBackColor = true;
+            this.btnExport2.Click += new System.EventHandler(this.btnExport2_Click);
             // 
-            // button1
+            // btnExport1
             // 
-            this.button1.Location = new System.Drawing.Point(22, 68);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(310, 35);
-            this.button1.TabIndex = 0;
-            this.button1.Text = "导出到 paimon.moe";
-            this.button1.UseVisualStyleBackColor = true;
+            this.btnExport1.Location = new System.Drawing.Point(22, 68);
+            this.btnExport1.Name = "btnExport1";
+            this.btnExport1.Size = new System.Drawing.Size(310, 35);
+            this.btnExport1.TabIndex = 0;
+            this.btnExport1.Text = "导出到 paimon.moe";
+            this.btnExport1.UseVisualStyleBackColor = true;
+            this.btnExport1.Click += new System.EventHandler(this.btnExport1_Click);
             // 
             // label3
             // 
@@ -239,34 +222,22 @@ namespace GenshinAchievement
             this.linkLabel1.TabStop = true;
             this.linkLabel1.Text = "点我打开说明文档";
             // 
-            // btnStart2
-            // 
-            this.btnStart2.Location = new System.Drawing.Point(6, 102);
-            this.btnStart2.Name = "btnStart2";
-            this.btnStart2.Size = new System.Drawing.Size(147, 37);
-            this.btnStart2.TabIndex = 10;
-            this.btnStart2.Text = "滚动截屏方案2";
-            this.btnStart2.UseVisualStyleBackColor = true;
-            this.btnStart2.Click += new System.EventHandler(this.btnStart2_Click);
-            // 
             // FormMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 18F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(697, 630);
+            this.ClientSize = new System.Drawing.Size(538, 630);
             this.Controls.Add(this.linkLabel1);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.groupBox4);
             this.Controls.Add(this.groupBox3);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox1);
-            this.Controls.Add(this.pictureBox1);
             this.Controls.Add(this.rtbConsole);
             this.Name = "FormMain";
             this.Text = "原神成就统计";
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.FormMain_FormClosed);
             this.Load += new System.EventHandler(this.FormMain_Load);
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             this.groupBox2.ResumeLayout(false);
@@ -281,8 +252,6 @@ namespace GenshinAchievement
 
         private System.Windows.Forms.RichTextBox rtbConsole;
         private System.Windows.Forms.Button btnStart;
-        private System.Windows.Forms.PictureBox pictureBox1;
-        private System.Windows.Forms.Timer timerCapture;
         private System.Windows.Forms.Button btnOCR;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label lblYSStatus;
@@ -294,11 +263,10 @@ namespace GenshinAchievement
         private System.Windows.Forms.GroupBox groupBox3;
         private System.Windows.Forms.GroupBox groupBox4;
         private System.Windows.Forms.Button button3;
-        private System.Windows.Forms.Button button2;
-        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Button btnExport2;
+        private System.Windows.Forms.Button btnExport1;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.LinkLabel linkLabel1;
-        private System.Windows.Forms.Button btnStart2;
     }
 }
 

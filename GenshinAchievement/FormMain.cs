@@ -25,14 +25,16 @@ namespace GenshinAchievement
         private YuanShenWindow window = new YuanShenWindow();
 
         int x, y, w, h;
-
-        string userDataPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "UserData");
+        string userDataPath, imgPagePath, imgSectionPath;
 
         PaimonMoeJson paimonMoeJson = PaimonMoeJson.Builder();
 
         public FormMain()
         {
             InitializeComponent();
+            userDataPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "UserData");
+            imgPagePath = Path.Combine(userDataPath, cboEdition.Text + "_img_page");
+            imgSectionPath = Path.Combine(userDataPath, cboEdition.Text + "_img_section");
         }
 
         private bool YSStatus()
@@ -61,20 +63,7 @@ namespace GenshinAchievement
             cboEdition.Text = "天地万象";
         }
 
-        private List<OcrAchievement> TestLocalAchievementPic()
-        {
-            List<OcrAchievement> list = new List<OcrAchievement>();
-            DirectoryInfo dir = new DirectoryInfo(Path.Combine(userDataPath, cboEdition.Text + "_img"));
-            FileInfo[] fileInfo = dir.GetFiles();
-            foreach (FileInfo item in fileInfo)
-            {
-                OcrAchievement achievement = new OcrAchievement();
-                achievement.Image = (Bitmap)Image.FromFile(item.FullName);
-                achievement.ImagePath = item.FullName;
-                list.Add(achievement);
-            }
-            return list;
-        }
+
 
         private void FormMain_FormClosed(object sender, FormClosedEventArgs e)
         {
@@ -83,9 +72,8 @@ namespace GenshinAchievement
 
         private void btnOCR_Click(object sender, EventArgs e)
         {
-            List<OcrAchievement> list = TestLocalAchievementPic();
+            List<OcrAchievement> list = LoadImgSection();
             OcrUtils.Ocr(list);
-
         }
 
         private void btnAutoArea_Click(object sender, EventArgs e)
@@ -107,211 +95,149 @@ namespace GenshinAchievement
             Bitmap ysPic = capture.Capture(x, y, w, h);
             Rectangle rect = ImageRecognition.CalculateCatchArea(ysPic);
             //pictureBox1.Image = ysPic;
-            pictureBox1.Image = capture.Capture(x + rect.X, y + rect.Y, rect.Width, rect.Height);
+            //pictureBox1.Image = capture.Capture(x + rect.X, y + rect.Y, rect.Width, rect.Height);
             //InitAreaWindows(rect);
         }
 
-        private void btnStart_Click(object sender, EventArgs e)
-        {
-
-            if (!YSStatus())
-            {
-                PrintMsg("未找到原神进程，请先启动原神！");
-                return;
-            }
-            cboEdition.Enabled = false;
-            IOUtils.CreateFolder(userDataPath);
-
-            window.Focus();
-            capture.Start();
-            Thread.Sleep(200);
-
-            Rectangle rc = window.GetSize();
-            x = (int)Math.Ceiling(rc.X * PrimaryScreen.ScaleX);
-            y = (int)Math.Ceiling(rc.Y * PrimaryScreen.ScaleY);
-            w = (int)Math.Ceiling(rc.Width * PrimaryScreen.ScaleX);
-            h = (int)Math.Ceiling(rc.Height * PrimaryScreen.ScaleY);
-            Bitmap ysPic = capture.Capture(x, y, w, h);
-            // 使用新的坐标
-            Rectangle rect = ImageRecognition.CalculateCatchArea(ysPic);
-            x += rect.X;
-            y += rect.Y;
-            w = rect.Width + 2;
-            h = rect.Height;
-            pictureBox1.Image = capture.Capture(x, y, w, h);
-
-
-            Thread.Sleep(500);
-
-
-            List<OcrAchievement> achievementList = new List<OcrAchievement>();
-
-            int n = 0;
-            int preCnt = 0;
-            //int zeroNum = 0;
-            while (true)
-            {
-                YSClick();
-
-                Bitmap pagePic = capture.Capture(x, y, w, h);
-                pictureBox1.Image = pagePic;
-                bool succ = ImageRecognition.Split(pagePic, ref achievementList);
-                int pageCount = achievementList.Count - preCnt;
-                PrintMsg($"当前{pageCount}个成就");
-                preCnt = achievementList.Count;
-                //if(pageCount == 0)
-                //{
-                //    if(zeroNum++ > 5)
-                //    {
-                //        break;
-                //    }
-                //}
-                while (!succ)
-                {
-                    PrintMsg($"分割时发现位置不正确，向上滚动");
-                    YSClick();
-                    window.MouseWheelUp();
-                    Thread.Sleep(50);
-                    pagePic = capture.Capture(x, y, w, h);
-                    pictureBox1.Image = pagePic;
-                    succ = ImageRecognition.Split(pagePic, ref achievementList);
-                }
-
-
-                int rowNum = 1, scrollCount = 0;
-                bool preOnePixHightPicIsInRow = false, first = false;
-                while (rowNum <= pageCount && scrollCount < 10)
-                {
-                    Bitmap onePixHightPic = capture.Capture(x, y + 15, w, 1); // 截取一个1pix的长条
-                    if (!first)
-                    {
-                        YSClick();
-                        window.MouseWheelDown();
-                        Thread.Sleep(50);
-                    }
-                    if (ImageRecognition.IsInRow(onePixHightPic))
-                    {
-                        //PrintMsg($"在行内");
-                        if (!preOnePixHightPicIsInRow)
-                        {
-                            PrintMsg($"进入第{rowNum}行");
-                        }
-                        preOnePixHightPicIsInRow = true;
-                    }
-                    else
-                    {
-                        //PrintMsg($"在行外");
-                        if (preOnePixHightPicIsInRow)
-                        {
-                            PrintMsg($"离开第{rowNum}行");
-                            rowNum++;
-                            scrollCount = 0;
-                        }
-                        preOnePixHightPicIsInRow = false;
-                    }
-                    scrollCount++;
-                }
-
-                if (scrollCount >= 10)
-                {
-                    PrintMsg($"已经到达底部");
-                    break;
-                }
-
-                n++;
-            }
-
-            string imgPath = Path.Combine(userDataPath, cboEdition.Text + "_img");
-            IOUtils.CreateFolder(imgPath);
-            IOUtils.DeleteFolder(imgPath);
-            foreach (OcrAchievement a in achievementList)
-            {
-                a.Split();
-                a.Image.Save(Path.Combine(imgPath, a.Index + ".png"));
-            }
-            PrintMsg($"文件写入完成");
-            cboEdition.Enabled = true;
-        }
-
-        private async void btnStart2_Click(object sender, EventArgs e)
+        private async void btnStart_Click(object sender, EventArgs e)
         {
             if (!YSStatus())
             {
                 PrintMsg("未找到原神进程，请先启动原神！");
                 return;
             }
-            cboEdition.Enabled = false;
-            IOUtils.CreateFolder(userDataPath);
+            btnStart.Enabled = false;
 
-            window.Focus();
             capture.Start();
+
+            // 1.切换到原神窗口
+            PrintMsg($"切换到原神窗口");
+            window.Focus();
             Thread.Sleep(200);
 
+            // 2. 定位截图选区
             Rectangle rc = window.GetSize();
             x = (int)Math.Ceiling(rc.X * PrimaryScreen.ScaleX);
             y = (int)Math.Ceiling(rc.Y * PrimaryScreen.ScaleY);
             w = (int)Math.Ceiling(rc.Width * PrimaryScreen.ScaleX);
             h = (int)Math.Ceiling(rc.Height * PrimaryScreen.ScaleY);
-            Bitmap ysPic = capture.Capture(x, y, w, h);
+            Bitmap ysWindowPic = capture.Capture(x, y, w, h);
             // 使用新的坐标
-            Rectangle rect = ImageRecognition.CalculateCatchArea(ysPic);
+            Rectangle rect = ImageRecognition.CalculateCatchArea(ysWindowPic);
+            PrintMsg($"已定位成就栏位置");
             x += rect.X;
             y += rect.Y;
             w = rect.Width + 2;
             h = rect.Height;
-            pictureBox1.Image = capture.Capture(x, y, w, h);
 
-
+            PrintMsg($"0.5s后开始自动滚动截图，按F12终止！");
             Thread.Sleep(500);
             YSClick();
 
-            string imgPath = Path.Combine(userDataPath, cboEdition.Text + "_img_temp");
-            string imgPath2 = Path.Combine(userDataPath, cboEdition.Text + "_img");
-            IOUtils.CreateFolder(imgPath);
-            IOUtils.DeleteFolder(imgPath);
-            IOUtils.CreateFolder(imgPath2);
-            IOUtils.DeleteFolder(imgPath2);
+            IOUtils.CreateFolder(userDataPath);
+            IOUtils.CreateFolder(imgPagePath);
+            IOUtils.DeleteFolder(imgPagePath);
+
+            paimonMoeJson = PaimonMoeJson.Builder();
 
             await Task.Run(() =>
             {
+                // 3. 滚动截图
                 int rowIn = 0, rowOut = 0, n = 0;
-                //Bitmap pagePic = null;
                 while (rowIn < 15 && rowOut < 15)
                 {
-                    Bitmap pagePic = capture.Capture(x, y, w, h);
-                    if (n % 20 == 0)
+                    try
                     {
-                        pagePic.Save(Path.Combine(imgPath, n + ".png"));
-                        PrintMsg($"{n}写入文件");
+                        Bitmap pagePic = capture.Capture(x, y, w, h);
+                        if (n % 20 == 0)
+                        {
+                            pagePic.Save(Path.Combine(imgPagePath, n + ".png"));
+                            //PrintMsg($"{n}：截图并保存");
+                        }
+
+                        Bitmap onePixHightPic = capture.Capture(x, y + h - 20, w, 1); // 截取一个1pix的长条
+                        if (ImageRecognition.IsInRow(onePixHightPic))
+                        {
+                            rowIn++;
+                            rowOut = 0;
+                        }
+                        else
+                        {
+                            rowIn = 0;
+                            rowOut++;
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        PrintMsg(ex.Message);
                     }
 
-                    //List<Bitmap> list = ImageRecognition.Split(pagePic);
-                    //for (int i = 0; i < list.Count; i++)
-                    //{
-                    //    list[i].Save(Path.Combine(imgPath2, n + "_" + i + ".png"));
-                    //}
-
-                    Bitmap onePixHightPic = capture.Capture(x, y + 20, w, 1); // 截取一个1pix的长条
-                    if (ImageRecognition.IsInRow(onePixHightPic))
-                    {
-                        rowIn++;
-                        rowOut = 0;
-                    }
-                    else
-                    {
-                        rowIn = 0;
-                        rowOut++;
-                    }
-                    //pictureBox1.Image = pagePic;
                     YSClick();
                     window.MouseWheelDown();
                     n++;
                 }
-                //Bitmap lastPagePic = capture.Capture(x, y, w, h);
-                //lastPagePic.Save(Path.Combine(imgPath, ++n + ".png"));
-                PrintMsg($"文件写入完成");
+                Bitmap lastPagePic = capture.Capture(x, y, w, h);
+                lastPagePic.Save(Path.Combine(imgPagePath, ++n + ".png"));
+                PrintMsg($"滚动截图完成");
+
+                // 4. 分割截图
+                PageToSection();
+                PrintMsg($"切割成就图片完成");
+
+                // 5. OCR
+                List<OcrAchievement> list = LoadImgSection();
+                OcrUtils.Ocr(list);
+                PrintMsg($"OCR完成");
+                Matching(list);
+                PrintMsg($"成就匹配完成");
             });
-            cboEdition.Enabled = true;
+            btnStart.Enabled = true;
+        }
+
+
+
+        /// <summary>
+        /// 读取截图并切片
+        /// </summary>
+        private void PageToSection()
+        {
+            IOUtils.CreateFolder(imgSectionPath);
+            IOUtils.DeleteFolder(imgSectionPath);
+
+            DirectoryInfo dir = new DirectoryInfo(imgPagePath);
+            foreach (FileInfo item in dir.GetFiles())
+            {
+                Bitmap imgPage = (Bitmap)Image.FromFile(item.FullName);
+                List<Bitmap> list = ImageRecognition.Split(imgPage);
+                for (int i = 0; i < list.Count; i++)
+                {
+                    list[i].Save(Path.Combine(imgSectionPath, item.Name + "_" + i + ".png"));
+                }
+                //PrintMsg($"{item.Name}切片完成");
+            }
+        }
+
+        private List<OcrAchievement> LoadImgSection()
+        {
+            List<OcrAchievement> list = new List<OcrAchievement>();
+            DirectoryInfo dir = new DirectoryInfo(imgSectionPath);
+            FileInfo[] fileInfo = dir.GetFiles();
+            foreach (FileInfo item in fileInfo)
+            {
+                OcrAchievement achievement = new OcrAchievement();
+                achievement.Image = (Bitmap)Image.FromFile(item.FullName);
+                achievement.ImagePath = item.FullName;
+                list.Add(achievement);
+            }
+            return list;
+        }
+
+        private void Matching(List<OcrAchievement> achievementList)
+        {
+            foreach (OcrAchievement a in achievementList)
+            {
+                paimonMoeJson.Matching(cboEdition.Text, a);
+            }
         }
 
         private void YSClick()
@@ -330,11 +256,16 @@ namespace GenshinAchievement
             this.rtbConsole.ScrollToCaret();
         }
 
+        private void btnExport1_Click(object sender, EventArgs e)
+        {
+            FormText form = new FormText(TextUtils.GeneratePaimonMoeJS(cboEdition.Text, paimonMoeJson));
+            form.ShowDialog();
+        }
 
-
-        private void timerCapture_Tick(object sender, EventArgs e)
+        private void btnExport2_Click(object sender, EventArgs e)
         {
 
         }
+
     }
 }

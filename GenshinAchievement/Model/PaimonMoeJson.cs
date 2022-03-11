@@ -9,7 +9,7 @@ using System.Web.Script.Serialization;
 
 namespace GenshinAchievement.Model
 {
-    class PaimonMoeJson
+    public class PaimonMoeJson
     {
         public Dictionary<string, List<ExistAchievement>> All { get; set; }
 

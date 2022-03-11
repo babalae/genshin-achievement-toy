@@ -17,54 +17,12 @@ namespace GenshinAchievement.Utils
 
         public static async void Ocr(List<OcrAchievement> achievementList)
         {
-            PaimonMoeJson paimonMoeJson = PaimonMoeJson.Builder();
-
-            JavaScriptSerializer serializer = new JavaScriptSerializer();
             Windows.Globalization.Language lang = new Windows.Globalization.Language("zh-Hans-CN");
             OcrEngine engine = OcrEngine.TryCreateFromLanguage(lang);
             foreach (OcrAchievement a in achievementList)
             {
                 string r = await a.Ocr(engine);
                 Console.WriteLine(r);
-            }
-            Console.WriteLine("识别结束");
-            string context = "";
-            foreach (OcrAchievement a in achievementList)
-            {
-                paimonMoeJson.Matching("天地万象", a);
-                a.Image = null;
-                //context += $"------------------\n";
-                //context += $"{a.ImagePath}\n";
-                context += $"------------------\n";
-                context += $"{serializer.Serialize(a)}\n";
-                context += $"------------------\n";
-            }
-            using (StreamWriter sw = new StreamWriter(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "ocr2.txt"), false))
-            {
-                sw.WriteLine(context);
-            }
-
-            string paimonMoeJsItem = "";
-            foreach (ExistAchievement existAchievement in paimonMoeJson.All["天地万象"])
-            {
-                if(existAchievement.done)
-                {
-                    paimonMoeJsItem += $"[0,{existAchievement.id}],";
-                }
-            }
-            if(paimonMoeJsItem.EndsWith(","))
-            {
-                paimonMoeJsItem.Substring(paimonMoeJsItem.Length - 2, 1);
-            }
-            string paimonMoeJs = "const b = [" + paimonMoeJsItem + @"];
-const a = (await localforage.getItem('achievement')) || { };
-            b.forEach(c => { a[c[0]] = a[c[0]] ||{ }; a[c[0]][c[1]] = true})
-await localforage.setItem('achievement', a);
-            location.href = '/achievement'";
-
-            using (StreamWriter sw = new StreamWriter(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "js.txt"), false))
-            {
-                sw.WriteLine(paimonMoeJs);
             }
         }
 

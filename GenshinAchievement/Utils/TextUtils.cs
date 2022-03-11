@@ -1,4 +1,5 @@
-﻿using System;
+﻿using GenshinAchievement.Model;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -52,6 +53,36 @@ namespace GenshinAchievement.Utils
                 }
             }
             return chineseString.Length > 0 ? chineseString.ToString() : string.Empty;
+        }
+
+        public static string GeneratePaimonMoeJS(string edition, PaimonMoeJson paimonMoeJson)
+        {
+            string paimonMoeJsItem = "";
+            foreach (ExistAchievement existAchievement in paimonMoeJson.All[edition])
+            {
+                if (existAchievement.done)
+                {
+                    paimonMoeJsItem += $"[0,{existAchievement.id}],";
+                }
+            }
+            if (paimonMoeJsItem.EndsWith(","))
+            {
+                paimonMoeJsItem.Substring(paimonMoeJsItem.Length - 2, 1);
+            }
+            string paimonMoeJs = @"/*
+* 复制此处所有内容，
+* 在 https://paimon.moe/ 页面按F12打开开发者工具，
+* 选择控制台(Console)
+* 粘贴并回车执行完成导入
+*/
+";
+
+                paimonMoeJs+="const b = [" + paimonMoeJsItem + @"];
+const a = (await localforage.getItem('achievement')) || { };
+            b.forEach(c => { a[c[0]] = a[c[0]] ||{ }; a[c[0]][c[1]] = true})
+await localforage.setItem('achievement', a);
+            location.href = '/achievement'";
+            return paimonMoeJs;
         }
     }
 }

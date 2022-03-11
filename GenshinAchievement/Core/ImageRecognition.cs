@@ -214,7 +214,7 @@ namespace GenshinAchievement.Core
                     int h = yList[i] - yList[i - 1];
                     if (h > 10)
                     {
-                        list.Add(CreateNewBitmap(imgSrc, 0, yList[i], imgSrc.Width, h));
+                        list.Add(CreateNewBitmap(imgSrc, 0, yList[i - 1], imgSrc.Width, h));
                     }
                 }
             }
@@ -226,7 +226,7 @@ namespace GenshinAchievement.Core
             Bitmap img = new Bitmap(w, h, PixelFormat.Format24bppRgb);
             using (Graphics g = Graphics.FromImage(img))
             {
-                g.DrawImage(img, new Rectangle(0, 0, w, h), x, y, w, h, GraphicsUnit.Pixel);
+                g.DrawImage(imgSrc, new Rectangle(0, 0, w, h), x, y, w, h, GraphicsUnit.Pixel);
             }
             return img;
         }
