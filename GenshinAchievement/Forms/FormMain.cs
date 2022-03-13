@@ -4,14 +4,9 @@ using GenshinAchievement.Model;
 using GenshinAchievement.Utils;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
+using System.Diagnostics;
 using System.Drawing;
-using System.Drawing.Imaging;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Web.Script.Serialization;
@@ -26,6 +21,8 @@ namespace GenshinAchievement
         private ImageCapture capture = new ImageCapture();
 
         private YuanShenWindow window = new YuanShenWindow();
+
+        private string thisVersion;
 
         int x, y, w, h;
         string userDataPath, imgPagePath, imgSectionPath;
@@ -57,6 +54,16 @@ namespace GenshinAchievement
 
         private void FormMain_Load(object sender, EventArgs e)
         {
+            // 标题加上版本号
+            string currentVersion = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString();
+            if (currentVersion.Length > 3)
+            {
+                thisVersion = currentVersion.Substring(0, 3);
+                currentVersion = " v" + thisVersion;
+            }
+            this.Text += currentVersion;
+            GAHelper.Instance.RequestPageView($"/achi/main/{thisVersion}", $"进入{thisVersion}版本主界面");
+
             YSStatus();
             //foreach (var item in paimonMoeJson.All)
             //{
@@ -384,7 +391,10 @@ namespace GenshinAchievement
             form.ShowDialog();
         }
 
-
+        private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            Process.Start("https://github.com/babalae/genshin-achievement-toy");
+        }
 
         #region Hotkey
         private Hotkey hotkey;

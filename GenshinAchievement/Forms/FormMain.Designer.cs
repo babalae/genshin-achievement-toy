@@ -183,21 +183,22 @@ namespace GenshinAchievement
             // 
             this.label3.AutoSize = true;
             this.label3.ForeColor = System.Drawing.Color.Red;
-            this.label3.Location = new System.Drawing.Point(12, 9);
+            this.label3.Location = new System.Drawing.Point(31, 9);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(188, 18);
             this.label3.TabIndex = 13;
-            this.label3.Text = "使用前请务必先阅读：";
+            this.label3.Text = "开源地址与使用说明：";
             // 
             // linkLabel1
             // 
             this.linkLabel1.AutoSize = true;
-            this.linkLabel1.Location = new System.Drawing.Point(192, 9);
+            this.linkLabel1.Location = new System.Drawing.Point(206, 9);
             this.linkLabel1.Name = "linkLabel1";
             this.linkLabel1.Size = new System.Drawing.Size(80, 18);
             this.linkLabel1.TabIndex = 14;
             this.linkLabel1.TabStop = true;
-            this.linkLabel1.Text = "使用说明";
+            this.linkLabel1.Text = "软件主页";
+            this.linkLabel1.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel1_LinkClicked);
             // 
             // FormMain
             // 
@@ -210,9 +211,12 @@ namespace GenshinAchievement
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.rtbConsole);
-            this.Name = "FormMain";
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.Icon = global::GenshinAchievement.Properties.Resources.kokomi;
-            this.Text = "原神成就统计";
+            this.MaximizeBox = false;
+            this.MinimizeBox = false;
+            this.Name = "FormMain";
+            this.Text = "原神成就导出";
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.FormMain_FormClosed);
             this.Load += new System.EventHandler(this.FormMain_Load);
             this.groupBox1.ResumeLayout(false);

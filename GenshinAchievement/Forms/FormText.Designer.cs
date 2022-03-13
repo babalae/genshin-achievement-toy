@@ -51,7 +51,7 @@ namespace GenshinAchievement
             this.Controls.Add(this.richTextBox1);
             this.Icon = global::GenshinAchievement.Properties.Resources.kokomi;
             this.Name = "FormText";
-            this.Text = "文本";
+            this.Text = "文本框";
             this.ResumeLayout(false);
 
         }

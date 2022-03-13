@@ -21,9 +21,9 @@
 2. 点击“一键识别成就”，在弹出框中确认识别选区没有问题后，然后点击“确定”，程序会自动滚动成就页面进行截图识别。**此时不要移动鼠标，等成就识别完成即可，如果出现异常情况可以按<kbd>F11</kbd>停止识别**
 
 3. 识别完成后，可以选择以下网站进行数据导入并查看，具体导入方式可以看注释。
-    * https://cocogoat.work/
-    * https://seelie.me/
-    * https://paimon.moe/
+    * (cocogoat.work)[https://cocogoat.work/]
+    * (seelie.me)[https://seelie.me/]
+    * (paimon.moe)[https://paimon.moe/]
 
 ## FAQ
 * 为什么需要管理员权限？
