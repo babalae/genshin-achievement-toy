@@ -14,7 +14,9 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Web.Script.Serialization;
 using System.Windows.Forms;
+using Windows.Media.Ocr;
 
 namespace GenshinAchievement
 {
@@ -28,15 +30,13 @@ namespace GenshinAchievement
         int x, y, w, h;
         string userDataPath, imgPagePath, imgSectionPath;
         bool stopFlag = false;
+        Config config;
 
         PaimonMoeJson paimonMoeJson = PaimonMoeJson.Builder();
 
         public FormMain()
         {
             InitializeComponent();
-            userDataPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "UserData");
-            imgPagePath = Path.Combine(userDataPath, cboEdition.Text + "_img_page");
-            imgSectionPath = Path.Combine(userDataPath, cboEdition.Text + "_img_section");
         }
 
         private bool YSStatus()
@@ -64,11 +64,33 @@ namespace GenshinAchievement
             //}
             cboEdition.Items.Add("天地万象");
             cboEdition.Text = "天地万象";
+            userDataPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "UserData");
+            imgPagePath = Path.Combine(userDataPath, cboEdition.Text + "_img_page");
+            imgSectionPath = Path.Combine(userDataPath, cboEdition.Text + "_img_section");
 
+
+            string configPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "config.json");
+            if (File.Exists(configPath))
+            {
+                try
+                {
+                    JavaScriptSerializer serializer = new JavaScriptSerializer();
+                    config = serializer.Deserialize<Config>(File.ReadAllText(configPath));
+                }
+                catch (Exception ex)
+                {
+                    PrintMsg("配置解析失败:" + ex.Message);
+                    MessageBox.Show(ex.Message, "配置解析失败", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
+            else
+            {
+                config = new Config();
+            }
 
             try
             {
-                RegisterHotKey("F11");
+                RegisterHotKey(config.GetHotkeyStop());
             }
             catch (Exception ex)
             {
@@ -113,125 +135,155 @@ namespace GenshinAchievement
 
         private async void btnStart_Click(object sender, EventArgs e)
         {
-            if (!YSStatus())
+            try
             {
-                PrintMsg("未找到原神进程，请先启动原神！");
-                return;
-            }
-            capture.Start();
+                if (!YSStatus())
+                {
+                    PrintMsg("未找到原神进程，请先启动原神！");
+                    return;
+                }
+                capture.Start();
 
-            stopFlag = false;
-            btnStart.Enabled = false;
+                stopFlag = false;
+                DisabledAllControl();
 
 
 
-            // 1.切换到原神窗口
-            PrintMsg($"切换到原神窗口");
-            window.Focus();
-            Thread.Sleep(200);
+                // 1.切换到原神窗口
+                PrintMsg($"切换到原神窗口");
+                window.Focus();
+                Thread.Sleep(200);
 
-            // 2. 定位截图选区
-            Rectangle rc = window.GetSize();
-            x = (int)Math.Ceiling(rc.X * PrimaryScreen.ScaleX);
-            y = (int)Math.Ceiling(rc.Y * PrimaryScreen.ScaleY);
-            w = (int)Math.Ceiling(rc.Width * PrimaryScreen.ScaleX);
-            h = (int)Math.Ceiling(rc.Height * PrimaryScreen.ScaleY);
-            Bitmap ysWindowPic = capture.Capture(x, y, w, h);
+                // 2. 定位截图选区
+                Rectangle rc = window.GetSize();
+                x = (int)Math.Ceiling(rc.X * PrimaryScreen.ScaleX);
+                y = (int)Math.Ceiling(rc.Y * PrimaryScreen.ScaleY);
+                w = (int)Math.Ceiling(rc.Width * PrimaryScreen.ScaleX);
+                h = (int)Math.Ceiling(rc.Height * PrimaryScreen.ScaleY);
+                Bitmap ysWindowPic = capture.Capture(x, y, w, h);
 
-            // 使用新的坐标
-            Rectangle rect = ImageRecognition.CalculateCatchArea(ysWindowPic);
-            PrintMsg($"已定位成就栏位置");
-            x += rect.X;
-            y += rect.Y;
-            w = rect.Width + 2;
-            h = rect.Height;
+                // 使用新的坐标
+                Rectangle rect = ImageRecognition.CalculateCatchArea(ysWindowPic);
+                PrintMsg($"已定位成就栏位置");
+                x += rect.X;
+                y += rect.Y;
+                w = rect.Width + 2;
+                h = rect.Height;
 
-            FormPreviewCaptureArea formPreview = new FormPreviewCaptureArea(capture.Capture(x, y, w, h));
-            formPreview.Focus();
-            if (formPreview.ShowDialog() != DialogResult.OK)
-            {
-                btnStart.Enabled = true;
+                FormPreviewCaptureArea formPreview = new FormPreviewCaptureArea(capture.Capture(x, y, w, h));
                 formPreview.Focus();
-                return;
+                if (formPreview.ShowDialog() != DialogResult.OK)
+                {
+                    EnabledAllControl();
+                    formPreview.Focus();
+                    return;
+                }
+                window.Focus();
+                Thread.Sleep(200);
+
+                btnStart.Text = $"按{config.GetHotkeyStop()}终止滚动";
+                PrintMsg($"0.5s后开始自动滚动截图，按{config.GetHotkeyStop()}终止滚动！");
+                Thread.Sleep(500);
+                YSClick();
+
+                IOUtils.CreateFolder(userDataPath);
+                IOUtils.CreateFolder(imgPagePath);
+                IOUtils.DeleteFolder(imgPagePath);
+
+                paimonMoeJson = PaimonMoeJson.Builder();
+
+                await Task.Run(async () =>
+                {
+                    // 3. 滚动截图
+                    int rowIn = 0, rowOut = 0, n = 0;
+                    while (rowIn < 15 && rowOut < 15)
+                    {
+                        if (stopFlag)
+                        {
+                            PrintMsg($"滚动已经终止");
+                            break;
+                        }
+                        try
+                        {
+                            Bitmap pagePic = capture.Capture(x, y, w, h);
+                            if (n % config.GetCaptureInterval() == 0)
+                            {
+                                pagePic.Save(Path.Combine(imgPagePath, n + ".png"));
+                                //PrintMsg($"{n}：截图并保存");
+                            }
+
+                            Bitmap onePixHightPic = capture.Capture(x, y + h - 20, w, 1); // 截取一个1pix的长条
+                            if (ImageRecognition.IsInRow(onePixHightPic))
+                            {
+                                rowIn++;
+                                rowOut = 0;
+                            }
+                            else
+                            {
+                                rowIn = 0;
+                                rowOut++;
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            PrintMsg(ex.Message + Environment.NewLine + ex.StackTrace);
+                        }
+
+                        YSClick();
+                        window.MouseWheelDown();
+                        n++;
+                    }
+                    if (!stopFlag)
+                    {
+                        Bitmap lastPagePic = capture.Capture(x, y, w, h);
+                        lastPagePic.Save(Path.Combine(imgPagePath, ++n + ".png"));
+                        PrintMsg($"滚动截图完成");
+
+                        // 4. 分割截图
+                        btnStart.Text = $"截图处理中...";
+                        PageToSection();
+                        PrintMsg($"截图处理完成");
+
+                        // 5. OCR
+                        List<OcrAchievement> list = LoadImgSection();
+                        btnStart.Text = $"文字识别中...";
+                        await Ocr(list);
+                        PrintMsg($"文字识别完成");
+                        btnStart.Text = $"成就匹配中...";
+                        Matching(list);
+                        PrintMsg($"成就匹配完成");
+                    }
+                });
+
+                capture.Stop();
+
+                EnabledAllControl();
             }
-            window.Focus();
-            Thread.Sleep(200);
-
-            PrintMsg($"0.5s后开始自动滚动截图，按F11终止滚动！");
-            Thread.Sleep(500);
-            YSClick();
-
-            IOUtils.CreateFolder(userDataPath);
-            IOUtils.CreateFolder(imgPagePath);
-            IOUtils.DeleteFolder(imgPagePath);
-
-            paimonMoeJson = PaimonMoeJson.Builder();
-
-            await Task.Run(() =>
+            catch (Exception ex)
             {
-                // 3. 滚动截图
-                int rowIn = 0, rowOut = 0, n = 0;
-                while (rowIn < 15 && rowOut < 15)
-                {
-                    if(stopFlag)
-                    {
-                        break;
-                    }
-                    try
-                    {
-                        Bitmap pagePic = capture.Capture(x, y, w, h);
-                        if (n % 20 == 0)
-                        {
-                            pagePic.Save(Path.Combine(imgPagePath, n + ".png"));
-                            //PrintMsg($"{n}：截图并保存");
-                        }
-
-                        Bitmap onePixHightPic = capture.Capture(x, y + h - 20, w, 1); // 截取一个1pix的长条
-                        if (ImageRecognition.IsInRow(onePixHightPic))
-                        {
-                            rowIn++;
-                            rowOut = 0;
-                        }
-                        else
-                        {
-                            rowIn = 0;
-                            rowOut++;
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        PrintMsg(ex.Message);
-                    }
-
-                    YSClick();
-                    window.MouseWheelDown();
-                    n++;
-                }
-                if (!stopFlag)
-                {
-                    Bitmap lastPagePic = capture.Capture(x, y, w, h);
-                    lastPagePic.Save(Path.Combine(imgPagePath, ++n + ".png"));
-                    PrintMsg($"滚动截图完成");
-
-                    // 4. 分割截图
-                    PageToSection();
-                    PrintMsg($"切割成就图片完成");
-
-                    // 5. OCR
-                    List<OcrAchievement> list = LoadImgSection();
-                    OcrUtils.Ocr(list);
-                    PrintMsg($"OCR完成");
-                    Matching(list);
-                    PrintMsg($"成就匹配完成");
-                }
-            });
-
-            capture.Stop();
-
-            btnStart.Enabled = true;
+                EnabledAllControl();
+                MessageBox.Show(ex.Message + Environment.NewLine + ex.StackTrace, "错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
 
+        private void DisabledAllControl()
+        {
+            cboEdition.Enabled = false;
+            btnStart.Enabled = false;
+            btnExport1.Enabled = false;
+            btnExport2.Enabled = false;
+            btnExport3.Enabled = false;
+        }
+        private void EnabledAllControl()
+        {
+            cboEdition.Enabled = true;
+            btnStart.Enabled = true;
+            btnStart.Text = "识别成就";
+            btnExport1.Enabled = true;
+            btnExport2.Enabled = true;
+            btnExport3.Enabled = true;
+        }
 
         /// <summary>
         /// 读取截图并切片
@@ -242,7 +294,10 @@ namespace GenshinAchievement
             IOUtils.DeleteFolder(imgSectionPath);
 
             DirectoryInfo dir = new DirectoryInfo(imgPagePath);
-            foreach (FileInfo item in dir.GetFiles())
+            FileInfo[] fileInfo = dir.GetFiles();
+            progressBar1.Maximum = fileInfo.Length;
+            progressBar1.Value = 0;
+            foreach (FileInfo item in fileInfo)
             {
                 Bitmap imgPage = (Bitmap)Image.FromFile(item.FullName);
                 List<Bitmap> list = ImageRecognition.Split(imgPage);
@@ -251,6 +306,7 @@ namespace GenshinAchievement
                     list[i].Save(Path.Combine(imgSectionPath, item.Name + "_" + i + ".png"));
                 }
                 //PrintMsg($"{item.Name}切片完成");
+                progressBar1.Value++;
             }
         }
 
@@ -269,11 +325,28 @@ namespace GenshinAchievement
             return list;
         }
 
+        private async Task Ocr(List<OcrAchievement> achievementList)
+        {
+            Windows.Globalization.Language lang = new Windows.Globalization.Language("zh-Hans-CN");
+            OcrEngine engine = OcrEngine.TryCreateFromLanguage(lang);
+            progressBar1.Maximum = achievementList.Count;
+            progressBar1.Value = 0;
+            foreach (OcrAchievement a in achievementList)
+            {
+                string r = await a.Ocr(engine);
+                Console.WriteLine(r);
+                progressBar1.Value++;
+            }
+        }
+
         private void Matching(List<OcrAchievement> achievementList)
         {
+            progressBar1.Maximum = achievementList.Count;
+            progressBar1.Value = 0;
             foreach (OcrAchievement a in achievementList)
             {
                 paimonMoeJson.Matching(cboEdition.Text, a);
+                progressBar1.Value++;
             }
         }
 
@@ -286,7 +359,7 @@ namespace GenshinAchievement
 
         private void PrintMsg(string msg)
         {
-            msg = DateTime.Now + " " + msg;
+            msg = DateTime.Now.ToString("HH:mm:ss") + " " + msg;
             Console.WriteLine(msg);
             rtbConsole.Text += msg + Environment.NewLine;
             this.rtbConsole.SelectionStart = rtbConsole.TextLength;
@@ -301,8 +374,16 @@ namespace GenshinAchievement
 
         private void btnExport2_Click(object sender, EventArgs e)
         {
-           
+            FormText form = new FormText(TextUtils.GenerateSeelieMeJS(cboEdition.Text, paimonMoeJson));
+            form.ShowDialog();
         }
+
+        private void btnExport3_Click(object sender, EventArgs e)
+        {
+            FormText form = new FormText(TextUtils.GenerateCocogoatWorkJS(cboEdition.Text, paimonMoeJson));
+            form.ShowDialog();
+        }
+
 
 
         #region Hotkey
@@ -325,7 +406,7 @@ namespace GenshinAchievement
             }
             hotkeyHook = new HotkeyHook();
             // register the event that is fired after the key press.
-            hotkeyHook.KeyPressed += (sender, eventArgs) => 
+            hotkeyHook.KeyPressed += (sender, eventArgs) =>
             {
                 stopFlag = true;
             };

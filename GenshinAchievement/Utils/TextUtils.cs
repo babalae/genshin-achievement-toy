@@ -84,5 +84,71 @@ await localforage.setItem('achievement', a);
             location.href = '/achievement'";
             return paimonMoeJs;
         }
+
+
+        public static string GenerateSeelieMeJS(string edition, PaimonMoeJson paimonMoeJson)
+        {
+            string jsItem = "";
+            foreach (ExistAchievement existAchievement in paimonMoeJson.All[edition])
+            {
+                if (existAchievement.done)
+                {
+                    jsItem += $"[{existAchievement.id},\"手动勾选 {existAchievement.ocrAchievement.OcrAchievementFinshDate}\"],";
+                }
+            }
+            if (jsItem.EndsWith(","))
+            {
+                jsItem.Substring(jsItem.Length - 2, 1);
+            }
+            string js = @"/*
+* 复制此处所有内容，
+* 在 https://seelie.me/ 页面按F12打开开发者工具，
+* 选择控制台(Console)
+* 粘贴并回车执行完成导入
+*/
+";
+            js += "const z = [" + jsItem + @"];
+const a = localStorage.account || 'main'
+const b = JSON.parse(localStorage.getItem(`cocogoat.v1.${a}`)||'{}')
+z.forEach(c=>{b[c[0]]={done:true,notes:c[1]}})
+localStorage.setItem(`${a}-achievements`,JSON.stringify(b))
+localStorage.last_update = (new Date()).toISOString()
+location.href='/achievements'";
+            return js;
+        }
+
+        public static string GenerateCocogoatWorkJS(string edition, PaimonMoeJson paimonMoeJson)
+        {
+            string jsItem = "";
+            foreach (ExistAchievement existAchievement in paimonMoeJson.All[edition])
+            {
+                if (existAchievement.done)
+                {
+                    jsItem += $"[{existAchievement.id},\"{existAchievement.ocrAchievement.OcrAchievementFinshDate}\"],";
+                }
+            }
+            if (jsItem.EndsWith(","))
+            {
+                jsItem.Substring(jsItem.Length - 2, 1);
+            }
+            string js = @"/*
+* 复制此处所有内容，
+* 在 https://cocogoat.work/ 页面按F12打开开发者工具，
+* 选择控制台(Console)
+* 粘贴并回车执行完成导入
+*/
+";
+            js += "const z = [" + jsItem + @"];
+const a = '成就导出'
+const b = JSON.parse(localStorage.getItem(`cocogoat.v1.${a}`)||'{}')
+b.achievements=[]
+z.forEach(c=>{b.achievements.push({id:c[0],date:c[1],status:'手动勾选',categoryId:0})})
+localStorage.setItem(`cocogoat.v1.${a}`,JSON.stringify(b))
+localStorage.setItem(`cocogoat.v1.currentUser`,JSON.stringify(a))
+location.href='/achievement'";
+
+            return js;
+        }
+
     }
 }

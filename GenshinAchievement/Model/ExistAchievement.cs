@@ -19,5 +19,6 @@ namespace GenshinAchievement.Model
 
         /** 非json字段 **/
         public bool done;
+        public OcrAchievement ocrAchievement;
     }
 }

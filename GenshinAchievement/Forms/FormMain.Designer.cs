@@ -39,11 +39,11 @@ namespace GenshinAchievement
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.progressBar1 = new System.Windows.Forms.ProgressBar();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
+            this.btnExport3 = new System.Windows.Forms.Button();
             this.btnExport2 = new System.Windows.Forms.Button();
             this.btnExport1 = new System.Windows.Forms.Button();
             this.label3 = new System.Windows.Forms.Label();
             this.linkLabel1 = new System.Windows.Forms.LinkLabel();
-            this.btnExport3 = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox4.SuspendLayout();
@@ -55,7 +55,7 @@ namespace GenshinAchievement
             | System.Windows.Forms.AnchorStyles.Left)));
             this.rtbConsole.Location = new System.Drawing.Point(12, 387);
             this.rtbConsole.Name = "rtbConsole";
-            this.rtbConsole.Size = new System.Drawing.Size(344, 194);
+            this.rtbConsole.Size = new System.Drawing.Size(298, 194);
             this.rtbConsole.TabIndex = 0;
             this.rtbConsole.Text = "";
             // 
@@ -63,9 +63,9 @@ namespace GenshinAchievement
             // 
             this.btnStart.Location = new System.Drawing.Point(22, 29);
             this.btnStart.Name = "btnStart";
-            this.btnStart.Size = new System.Drawing.Size(310, 30);
+            this.btnStart.Size = new System.Drawing.Size(253, 30);
             this.btnStart.TabIndex = 3;
-            this.btnStart.Text = "识别成就";
+            this.btnStart.Text = "一键识别成就";
             this.btnStart.UseVisualStyleBackColor = true;
             this.btnStart.Click += new System.EventHandler(this.btnStart_Click);
             // 
@@ -96,7 +96,7 @@ namespace GenshinAchievement
             this.groupBox1.Controls.Add(this.label1);
             this.groupBox1.Location = new System.Drawing.Point(12, 51);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(344, 91);
+            this.groupBox1.Size = new System.Drawing.Size(298, 91);
             this.groupBox1.TabIndex = 9;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "第一步：启动原神并打开成就页面";
@@ -116,7 +116,7 @@ namespace GenshinAchievement
             this.cboEdition.FormattingEnabled = true;
             this.cboEdition.Location = new System.Drawing.Point(87, 58);
             this.cboEdition.Name = "cboEdition";
-            this.cboEdition.Size = new System.Drawing.Size(224, 26);
+            this.cboEdition.Size = new System.Drawing.Size(173, 26);
             this.cboEdition.TabIndex = 9;
             // 
             // groupBox2
@@ -125,16 +125,16 @@ namespace GenshinAchievement
             this.groupBox2.Controls.Add(this.btnStart);
             this.groupBox2.Location = new System.Drawing.Point(12, 148);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(344, 89);
+            this.groupBox2.Size = new System.Drawing.Size(298, 89);
             this.groupBox2.TabIndex = 10;
             this.groupBox2.TabStop = false;
-            this.groupBox2.Text = "第二步：滚动截图、保存并识别成就";
+            this.groupBox2.Text = "第二步：滚动截图、保存并识别";
             // 
             // progressBar1
             // 
             this.progressBar1.Location = new System.Drawing.Point(22, 65);
             this.progressBar1.Name = "progressBar1";
-            this.progressBar1.Size = new System.Drawing.Size(310, 15);
+            this.progressBar1.Size = new System.Drawing.Size(253, 15);
             this.progressBar1.TabIndex = 4;
             // 
             // groupBox4
@@ -144,16 +144,26 @@ namespace GenshinAchievement
             this.groupBox4.Controls.Add(this.btnExport1);
             this.groupBox4.Location = new System.Drawing.Point(12, 243);
             this.groupBox4.Name = "groupBox4";
-            this.groupBox4.Size = new System.Drawing.Size(344, 138);
+            this.groupBox4.Size = new System.Drawing.Size(298, 138);
             this.groupBox4.TabIndex = 12;
             this.groupBox4.TabStop = false;
             this.groupBox4.Text = "第三步：导出结果";
+            // 
+            // btnExport3
+            // 
+            this.btnExport3.Location = new System.Drawing.Point(22, 27);
+            this.btnExport3.Name = "btnExport3";
+            this.btnExport3.Size = new System.Drawing.Size(253, 30);
+            this.btnExport3.TabIndex = 2;
+            this.btnExport3.Text = "导出到 cocogoat.work";
+            this.btnExport3.UseVisualStyleBackColor = true;
+            this.btnExport3.Click += new System.EventHandler(this.btnExport3_Click);
             // 
             // btnExport2
             // 
             this.btnExport2.Location = new System.Drawing.Point(22, 99);
             this.btnExport2.Name = "btnExport2";
-            this.btnExport2.Size = new System.Drawing.Size(310, 30);
+            this.btnExport2.Size = new System.Drawing.Size(253, 30);
             this.btnExport2.TabIndex = 1;
             this.btnExport2.Text = "导出到 seelie.me";
             this.btnExport2.UseVisualStyleBackColor = true;
@@ -163,7 +173,7 @@ namespace GenshinAchievement
             // 
             this.btnExport1.Location = new System.Drawing.Point(22, 63);
             this.btnExport1.Name = "btnExport1";
-            this.btnExport1.Size = new System.Drawing.Size(310, 30);
+            this.btnExport1.Size = new System.Drawing.Size(253, 30);
             this.btnExport1.TabIndex = 0;
             this.btnExport1.Text = "导出到 paimon.moe";
             this.btnExport1.UseVisualStyleBackColor = true;
@@ -189,20 +199,11 @@ namespace GenshinAchievement
             this.linkLabel1.TabStop = true;
             this.linkLabel1.Text = "使用说明";
             // 
-            // btnExport3
-            // 
-            this.btnExport3.Location = new System.Drawing.Point(22, 27);
-            this.btnExport3.Name = "btnExport3";
-            this.btnExport3.Size = new System.Drawing.Size(310, 30);
-            this.btnExport3.TabIndex = 2;
-            this.btnExport3.Text = "导出到 cocogoat.work";
-            this.btnExport3.UseVisualStyleBackColor = true;
-            // 
             // FormMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 18F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(372, 593);
+            this.ClientSize = new System.Drawing.Size(322, 593);
             this.Controls.Add(this.linkLabel1);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.groupBox4);

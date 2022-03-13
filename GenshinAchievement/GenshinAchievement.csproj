@@ -79,6 +79,7 @@
     <Compile Include="Forms\FormText.Designer.cs">
       <DependentUpon>FormText.cs</DependentUpon>
     </Compile>
+    <Compile Include="Model\Config.cs" />
     <Compile Include="Model\OcrAchievement.cs" />
     <Compile Include="Core\ImageCapture.cs" />
     <Compile Include="Core\ImageRecognition.cs" />

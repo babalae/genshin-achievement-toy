@@ -39,6 +39,7 @@ namespace GenshinAchievement.Model
             {
                 ocrAchievement.Match = maxMatch;
                 maxMatch.done = true;
+                maxMatch.ocrAchievement = ocrAchievement;
             }
             else
             {
