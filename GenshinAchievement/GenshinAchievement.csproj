@@ -36,6 +36,9 @@
     <WarningLevel>4</WarningLevel>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
@@ -59,10 +62,21 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="FormText.cs">
+    <Compile Include="Forms\FormPreviewCaptureArea.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="FormText.Designer.cs">
+    <Compile Include="Forms\FormPreviewCaptureArea.Designer.cs">
+      <DependentUpon>FormPreviewCaptureArea.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\HotKey\Hotkey.cs" />
+    <Compile Include="Forms\HotKey\HotkeyHook.cs" />
+    <Compile Include="Forms\HotKey\HotkeyTextBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Forms\FormText.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\FormText.Designer.cs">
       <DependentUpon>FormText.cs</DependentUpon>
     </Compile>
     <Compile Include="Model\OcrAchievement.cs" />
@@ -70,16 +84,16 @@
     <Compile Include="Core\ImageRecognition.cs" />
     <Compile Include="Model\ExistAchievement.cs" />
     <Compile Include="Core\YuanShenWindow.cs" />
-    <Compile Include="FormMain.cs">
+    <Compile Include="Forms\FormMain.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="FormMain.Designer.cs">
+    <Compile Include="Forms\FormMain.Designer.cs">
       <DependentUpon>FormMain.cs</DependentUpon>
     </Compile>
-    <Compile Include="FormMotionArea.cs">
+    <Compile Include="Forms\FormMotionArea.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="FormMotionArea.Designer.cs">
+    <Compile Include="Forms\FormMotionArea.Designer.cs">
       <DependentUpon>FormMotionArea.cs</DependentUpon>
     </Compile>
     <Compile Include="Model\PaimonMoeJson.cs" />
@@ -92,13 +106,16 @@
     <Compile Include="Utils\PrimaryScreen.cs" />
     <Compile Include="Utils\OcrUtils.cs" />
     <Compile Include="Utils\TextUtils.cs" />
-    <EmbeddedResource Include="FormMain.resx">
+    <EmbeddedResource Include="Forms\FormMain.resx">
       <DependentUpon>FormMain.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="FormMotionArea.resx">
+    <EmbeddedResource Include="Forms\FormMotionArea.resx">
       <DependentUpon>FormMotionArea.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="FormText.resx">
+    <EmbeddedResource Include="Forms\FormPreviewCaptureArea.resx">
+      <DependentUpon>FormPreviewCaptureArea.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\FormText.resx">
       <DependentUpon>FormText.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
@@ -111,6 +128,7 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
+    <None Include="app.manifest" />
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>

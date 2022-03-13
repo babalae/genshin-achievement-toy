@@ -1,4 +1,5 @@
 ﻿using GenshinAchievement.Core;
+using GenshinAchievement.Forms.Hotkey;
 using GenshinAchievement.Model;
 using GenshinAchievement.Utils;
 using System;
@@ -26,6 +27,7 @@ namespace GenshinAchievement
 
         int x, y, w, h;
         string userDataPath, imgPagePath, imgSectionPath;
+        bool stopFlag = false;
 
         PaimonMoeJson paimonMoeJson = PaimonMoeJson.Builder();
 
@@ -56,14 +58,24 @@ namespace GenshinAchievement
         private void FormMain_Load(object sender, EventArgs e)
         {
             YSStatus();
-            foreach (var item in paimonMoeJson.All)
-            {
-                cboEdition.Items.Add(item.Key);
-            }
+            //foreach (var item in paimonMoeJson.All)
+            //{
+            //    cboEdition.Items.Add(item.Key);
+            //}
+            cboEdition.Items.Add("天地万象");
             cboEdition.Text = "天地万象";
+
+
+            try
+            {
+                RegisterHotKey("F11");
+            }
+            catch (Exception ex)
+            {
+                PrintMsg(ex.Message);
+                MessageBox.Show(ex.Message, "热键注册失败", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
-
-
 
         private void FormMain_FormClosed(object sender, FormClosedEventArgs e)
         {
@@ -106,9 +118,12 @@ namespace GenshinAchievement
                 PrintMsg("未找到原神进程，请先启动原神！");
                 return;
             }
+            capture.Start();
+
+            stopFlag = false;
             btnStart.Enabled = false;
 
-            capture.Start();
+
 
             // 1.切换到原神窗口
             PrintMsg($"切换到原神窗口");
@@ -122,6 +137,7 @@ namespace GenshinAchievement
             w = (int)Math.Ceiling(rc.Width * PrimaryScreen.ScaleX);
             h = (int)Math.Ceiling(rc.Height * PrimaryScreen.ScaleY);
             Bitmap ysWindowPic = capture.Capture(x, y, w, h);
+
             // 使用新的坐标
             Rectangle rect = ImageRecognition.CalculateCatchArea(ysWindowPic);
             PrintMsg($"已定位成就栏位置");
@@ -130,7 +146,18 @@ namespace GenshinAchievement
             w = rect.Width + 2;
             h = rect.Height;
 
-            PrintMsg($"0.5s后开始自动滚动截图，按F12终止！");
+            FormPreviewCaptureArea formPreview = new FormPreviewCaptureArea(capture.Capture(x, y, w, h));
+            formPreview.Focus();
+            if (formPreview.ShowDialog() != DialogResult.OK)
+            {
+                btnStart.Enabled = true;
+                formPreview.Focus();
+                return;
+            }
+            window.Focus();
+            Thread.Sleep(200);
+
+            PrintMsg($"0.5s后开始自动滚动截图，按F11终止滚动！");
             Thread.Sleep(500);
             YSClick();
 
@@ -146,6 +173,10 @@ namespace GenshinAchievement
                 int rowIn = 0, rowOut = 0, n = 0;
                 while (rowIn < 15 && rowOut < 15)
                 {
+                    if(stopFlag)
+                    {
+                        break;
+                    }
                     try
                     {
                         Bitmap pagePic = capture.Capture(x, y, w, h);
@@ -176,21 +207,27 @@ namespace GenshinAchievement
                     window.MouseWheelDown();
                     n++;
                 }
-                Bitmap lastPagePic = capture.Capture(x, y, w, h);
-                lastPagePic.Save(Path.Combine(imgPagePath, ++n + ".png"));
-                PrintMsg($"滚动截图完成");
+                if (!stopFlag)
+                {
+                    Bitmap lastPagePic = capture.Capture(x, y, w, h);
+                    lastPagePic.Save(Path.Combine(imgPagePath, ++n + ".png"));
+                    PrintMsg($"滚动截图完成");
 
-                // 4. 分割截图
-                PageToSection();
-                PrintMsg($"切割成就图片完成");
+                    // 4. 分割截图
+                    PageToSection();
+                    PrintMsg($"切割成就图片完成");
 
-                // 5. OCR
-                List<OcrAchievement> list = LoadImgSection();
-                OcrUtils.Ocr(list);
-                PrintMsg($"OCR完成");
-                Matching(list);
-                PrintMsg($"成就匹配完成");
+                    // 5. OCR
+                    List<OcrAchievement> list = LoadImgSection();
+                    OcrUtils.Ocr(list);
+                    PrintMsg($"OCR完成");
+                    Matching(list);
+                    PrintMsg($"成就匹配完成");
+                }
             });
+
+            capture.Stop();
+
             btnStart.Enabled = true;
         }
 
@@ -264,8 +301,46 @@ namespace GenshinAchievement
 
         private void btnExport2_Click(object sender, EventArgs e)
         {
-
+           
         }
+
+
+        #region Hotkey
+        private Hotkey hotkey;
+        private HotkeyHook hotkeyHook;
+
+        public void RegisterHotKey(string hotkeyStr)
+        {
+            if (string.IsNullOrEmpty(hotkeyStr))
+            {
+                UnregisterHotKey();
+                return;
+            }
+
+            hotkey = new Hotkey(hotkeyStr);
+
+            if (hotkeyHook != null)
+            {
+                hotkeyHook.Dispose();
+            }
+            hotkeyHook = new HotkeyHook();
+            // register the event that is fired after the key press.
+            hotkeyHook.KeyPressed += (sender, eventArgs) => 
+            {
+                stopFlag = true;
+            };
+            hotkeyHook.RegisterHotKey(hotkey.ModifierKey, hotkey.Key);
+        }
+
+        public void UnregisterHotKey()
+        {
+            if (hotkeyHook != null)
+            {
+                hotkeyHook.UnregisterHotKey();
+                hotkeyHook.Dispose();
+            }
+        }
+        #endregion
 
     }
 }
