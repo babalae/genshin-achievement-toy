@@ -2,8 +2,8 @@
 
 原神成就识别，主要用于快速查找未完成的隐藏成就，所以只支持“天地万象”的成就导出。
 
-* 支持任意分辨率下的窗口化原神
-* 仅支持中文识别，准确率约 80%。
+* 支持任意分辨率下的窗口化原神。
+* 仅支持中文识别，准确率约 80%，分辨率越高识别越准确。
 
 ![](https://raw.githubusercontent.com/babalae/genshin-achievement-toy/master/Docs/demo.gif)
                                               
