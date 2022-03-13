@@ -39,7 +39,7 @@ namespace GenshinAchievement
             this.richTextBox1.Location = new System.Drawing.Point(0, 0);
             this.richTextBox1.Name = "richTextBox1";
             this.richTextBox1.ReadOnly = true;
-            this.richTextBox1.Size = new System.Drawing.Size(583, 199);
+            this.richTextBox1.Size = new System.Drawing.Size(627, 397);
             this.richTextBox1.TabIndex = 0;
             this.richTextBox1.Text = "";
             // 
@@ -47,8 +47,9 @@ namespace GenshinAchievement
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 18F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(583, 199);
+            this.ClientSize = new System.Drawing.Size(627, 397);
             this.Controls.Add(this.richTextBox1);
+            this.Icon = global::GenshinAchievement.Properties.Resources.kokomi;
             this.Name = "FormText";
             this.Text = "文本";
             this.ResumeLayout(false);

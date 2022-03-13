@@ -93,7 +93,7 @@ await localforage.setItem('achievement', a);
             {
                 if (existAchievement.done)
                 {
-                    jsItem += $"[{existAchievement.id},\"手动勾选 {existAchievement.ocrAchievement.OcrAchievementFinshDate}\"],";
+                    jsItem += $"[{existAchievement.id},\"手动勾选 {existAchievement.ocrAchievement?.OcrAchievementFinshDate}\"],";
                 }
             }
             if (jsItem.EndsWith(","))
@@ -124,7 +124,7 @@ location.href='/achievements'";
             {
                 if (existAchievement.done)
                 {
-                    jsItem += $"[{existAchievement.id},\"{existAchievement.ocrAchievement.OcrAchievementFinshDate}\"],";
+                    jsItem += $"[{existAchievement.id},\"{existAchievement.ocrAchievement?.OcrAchievementFinshDate}\"],";
                 }
             }
             if (jsItem.EndsWith(","))

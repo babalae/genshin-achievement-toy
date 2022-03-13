@@ -41,6 +41,17 @@ public class Main {
             }
         }
         System.out.println(objectMapper.writeValueAsString(map));
+
+        List<TargetVo> levelList = new ArrayList<>();
+        List<TargetVo> tdwxList = map.get("天地万象");
+        for (TargetVo targetVo : tdwxList) {
+            if(targetVo.getLevels() != null) {
+                levelList.add(targetVo);
+            }
+        }
+        System.out.println(objectMapper.writeValueAsString(levelList));
+
+
         //  校验数据
         Iterator<TargetVo> it = listFromExcel.iterator();
         while (it.hasNext()) {

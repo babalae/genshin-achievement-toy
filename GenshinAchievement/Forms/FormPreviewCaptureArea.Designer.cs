@@ -91,6 +91,7 @@ namespace GenshinAchievement
             this.Controls.Add(this.label1);
             this.Controls.Add(this.pictureBox1);
             this.Name = "FormPreviewCaptureArea";
+            this.Icon = global::GenshinAchievement.Properties.Resources.kokomi;
             this.Text = "预览识别区域";
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.ResumeLayout(false);

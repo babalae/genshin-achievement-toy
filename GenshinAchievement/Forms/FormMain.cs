@@ -279,7 +279,7 @@ namespace GenshinAchievement
         {
             cboEdition.Enabled = true;
             btnStart.Enabled = true;
-            btnStart.Text = "识别成就";
+            btnStart.Text = "一键识别成就";
             btnExport1.Enabled = true;
             btnExport2.Enabled = true;
             btnExport3.Enabled = true;

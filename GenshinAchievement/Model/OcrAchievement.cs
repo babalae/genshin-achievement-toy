@@ -108,7 +108,7 @@ namespace GenshinAchievement.Model
                 }
                 else if (firstRect.Left > verticalX && firstRect.Top > horizontalY)
                 {
-                    OcrAchievementFinshDate = lineStr; // 右下
+                    OcrAchievementFinshDate = lineStr.Replace(" ", "").Replace("／", "/"); // 右下 去空格
                 }
             }
 
