@@ -101,56 +101,65 @@ namespace GenshinAchievement.Model
             }
             else if (exist.id == 81026 || exist.id == 81027 || exist.id == 81028)
             {
-                if (ocr.OcrAchievementDesc.Contains("3"))
+                if (!string.IsNullOrEmpty(ocr.OcrAchievementDesc))
                 {
-                    dic[81028].done = true;
-                    dic[81027].done = true;
-                    dic[81026].done = true;
-                }
-                else if (ocr.OcrAchievementDesc.Contains("2"))
-                {
-                    dic[81027].done = true;
-                    dic[81026].done = true;
-                }
-                else if (ocr.OcrAchievementDesc.Contains("1"))
-                {
-                    dic[81026].done = true;
+                    if (ocr.OcrAchievementDesc.Contains("3"))
+                    {
+                        dic[81028].done = true;
+                        dic[81027].done = true;
+                        dic[81026].done = true;
+                    }
+                    else if (ocr.OcrAchievementDesc.Contains("2"))
+                    {
+                        dic[81027].done = true;
+                        dic[81026].done = true;
+                    }
+                    else if (ocr.OcrAchievementDesc.Contains("1"))
+                    {
+                        dic[81026].done = true;
+                    } 
                 }
             }
             else if (exist.id == 81029 || exist.id == 81030 || exist.id == 81031)
             {
-                if (ocr.OcrAchievementDesc.Contains("3"))
+                if (!string.IsNullOrEmpty(ocr.OcrAchievementDesc))
                 {
-                    dic[81031].done = true;
-                    dic[81030].done = true;
-                    dic[81029].done = true;
-                }
-                else if (ocr.OcrAchievementDesc.Contains("2"))
-                {
-                    dic[81030].done = true;
-                    dic[81029].done = true;
-                }
-                else if (ocr.OcrAchievementDesc.Contains("1"))
-                {
-                    dic[81029].done = true;
+                    if (ocr.OcrAchievementDesc.Contains("3"))
+                    {
+                        dic[81031].done = true;
+                        dic[81030].done = true;
+                        dic[81029].done = true;
+                    }
+                    else if (ocr.OcrAchievementDesc.Contains("2"))
+                    {
+                        dic[81030].done = true;
+                        dic[81029].done = true;
+                    }
+                    else if (ocr.OcrAchievementDesc.Contains("1"))
+                    {
+                        dic[81029].done = true;
+                    }
                 }
             }
             else if (exist.id == 82041 || exist.id == 82042 || exist.id == 82043)
             {
-                if (ocr.OcrAchievementDesc.Contains("50000"))
+                if (!string.IsNullOrEmpty(ocr.OcrAchievementDesc))
                 {
-                    dic[82043].done = true;
-                    dic[82042].done = true;
-                    dic[82041].done = true;
-                }
-                else if (ocr.OcrAchievementDesc.Contains("20000"))
-                {
-                    dic[82042].done = true;
-                    dic[82041].done = true;
-                }
-                else if (ocr.OcrAchievementDesc.Contains("5000"))
-                {
-                    dic[82041].done = true;
+                    if (ocr.OcrAchievementDesc.Contains("50000"))
+                    {
+                        dic[82043].done = true;
+                        dic[82042].done = true;
+                        dic[82041].done = true;
+                    }
+                    else if (ocr.OcrAchievementDesc.Contains("20000"))
+                    {
+                        dic[82042].done = true;
+                        dic[82041].done = true;
+                    }
+                    else if (ocr.OcrAchievementDesc.Contains("5000"))
+                    {
+                        dic[82041].done = true;
+                    }
                 }
             }
         }

@@ -111,10 +111,15 @@ namespace GenshinAchievement
 
         }
 
-        private void btnOCR_Click(object sender, EventArgs e)
+        private async void btnOCR_Click(object sender, EventArgs e)
         {
             List<OcrAchievement> list = LoadImgSection();
-            OcrUtils.Ocr(list);
+            btnStart.Text = $"文字识别中...";
+            await Ocr(list);
+            PrintMsg($"文字识别完成");
+            btnStart.Text = $"成就匹配中...";
+            Matching(list);
+            PrintMsg($"成就匹配完成");
         }
 
         private void btnAutoArea_Click(object sender, EventArgs e)
