@@ -3,11 +3,13 @@
 原神成就识别，主要用于快速查找未完成的隐藏成就，所以只支持“天地万象”的成就导出。
 
 * 支持任意分辨率下的窗口化原神
-* 仅支持中文识别
+* 仅支持中文识别，准确率约 80%。
 
+![](https://raw.githubusercontent.com/babalae/genshin-achievement-toy/master/Docs/demo.gif)
+                                              
 ## 下载地址
 
-[📥Github下载]()
+[📥Github下载](https://github.com/babalae/genshin-achievement-toy/releases/download/v1.0/GenshinAchievement_v1.0.zip)
 
 ## 使用方法
 
@@ -21,9 +23,9 @@
 2. 点击“一键识别成就”，在弹出框中确认识别选区没有问题后，然后点击“确定”，程序会自动滚动成就页面进行截图识别。**此时不要移动鼠标，等成就识别完成即可，如果出现异常情况可以按<kbd>F11</kbd>停止识别**
 
 3. 识别完成后，可以选择以下网站进行数据导入并查看，具体导入方式可以看注释。
-    * (cocogoat.work)[https://cocogoat.work/]
-    * (seelie.me)[https://seelie.me/]
-    * (paimon.moe)[https://paimon.moe/]
+    * [cocogoat.work](https://cocogoat.work/)
+    * [seelie.me](https://seelie.me/)
+    * [paimon.moe](https://paimon.moe/)
 
 ## FAQ
 * 为什么需要管理员权限？
