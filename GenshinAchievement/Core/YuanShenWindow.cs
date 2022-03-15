@@ -75,6 +75,7 @@ namespace GenshinAchievement.Core
 
         public void Focus()
         {
+            Native.SendMessage(HWND, 0x0112, (IntPtr)0xF120, (IntPtr)0);
             Native.SetForegroundWindow(HWND);
         }
 
