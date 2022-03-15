@@ -264,6 +264,7 @@ namespace GenshinAchievement
                         btnStart.Text = $"成就匹配中...";
                         Matching(list);
                         PrintMsg($"成就匹配完成");
+                        PrintMsg($"你可以点击对应的按钮导出成就啦~");
                     }
                 });
 

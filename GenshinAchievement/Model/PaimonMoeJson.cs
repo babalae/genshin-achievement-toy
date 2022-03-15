@@ -43,16 +43,19 @@ namespace GenshinAchievement.Model
             }
             if (max > 0.6 && maxMatch != null)
             {
-                ocrAchievement.Match = maxMatch;
-                maxMatch.ocrAchievement = ocrAchievement;
-                // 成就集合要再次匹配描述，并把下级成就给完成
-                if (maxMatch.levels != null && maxMatch.levels.Count > 1)
+                if (!string.IsNullOrWhiteSpace(ocrAchievement.OcrText) && ocrAchievement.OcrText.Contains("达成"))
                 {
-                    MatchingMutilLevels(ocrAchievement, maxMatch, dic);
-                }
-                else
-                {
-                    maxMatch.done = true;
+                    ocrAchievement.Match = maxMatch;
+                    maxMatch.ocrAchievement = ocrAchievement;
+                    // 成就集合要再次匹配描述，并把下级成就给完成
+                    if (maxMatch.levels != null && maxMatch.levels.Count > 1)
+                    {
+                        MatchingMutilLevels(ocrAchievement, maxMatch, dic);
+                    }
+                    else
+                    {
+                        maxMatch.done = true;
+                    }
                 }
             }
             else
@@ -117,7 +120,7 @@ namespace GenshinAchievement.Model
                     else if (ocr.OcrAchievementDesc.Contains("1"))
                     {
                         dic[81026].done = true;
-                    } 
+                    }
                 }
             }
             else if (exist.id == 81029 || exist.id == 81030 || exist.id == 81031)
