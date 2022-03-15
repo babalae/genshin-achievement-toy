@@ -311,7 +311,7 @@ namespace GenshinAchievement
             progressBar1.Value = 0;
             foreach (FileInfo item in fileInfo)
             {
-                Bitmap imgPage = (Bitmap)Image.FromFile(item.FullName);
+                Bitmap imgPage = IOUtils.FromFile(item.FullName);
                 List<Bitmap> list = ImageRecognition.Split(imgPage);
                 for (int i = 0; i < list.Count; i++)
                 {
@@ -330,7 +330,7 @@ namespace GenshinAchievement
             foreach (FileInfo item in fileInfo)
             {
                 OcrAchievement achievement = new OcrAchievement();
-                achievement.Image = (Bitmap)Image.FromFile(item.FullName);
+                achievement.Image = IOUtils.FromFile(item.FullName);
                 achievement.ImagePath = item.FullName;
                 list.Add(achievement);
             }

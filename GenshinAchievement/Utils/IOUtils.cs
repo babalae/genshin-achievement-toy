@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -9,6 +10,12 @@ namespace GenshinAchievement.Utils
 {
     public class IOUtils
     {
+        public static Bitmap FromFile(string path)
+        {
+            byte[] bytes = File.ReadAllBytes(path);
+            MemoryStream stream = new MemoryStream(bytes);
+            return (Bitmap)Image.FromStream(stream);
+        }
 
         public static void CreateFolder(string dir)
         {
