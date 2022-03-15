@@ -41,9 +41,9 @@ namespace GenshinAchievement.Model
                 }
 
             }
-            if (max > 0.6 && maxMatch != null)
+            if (max > 0.6 && maxMatch != null && !string.IsNullOrWhiteSpace(ocrAchievement.OcrText))
             {
-                if (!string.IsNullOrWhiteSpace(ocrAchievement.OcrText) && ocrAchievement.OcrText.Contains("达成"))
+                if (ocrAchievement.OcrText.Contains("达成"))
                 {
                     ocrAchievement.Match = maxMatch;
                     maxMatch.ocrAchievement = ocrAchievement;
@@ -56,6 +56,10 @@ namespace GenshinAchievement.Model
                     {
                         maxMatch.done = true;
                     }
+                }
+                else if (maxMatch.levels != null && maxMatch.levels.Count > 1)
+                {
+                    MatchingMutilLevels(ocrAchievement, maxMatch, dic, false);
                 }
             }
             else
@@ -82,24 +86,24 @@ namespace GenshinAchievement.Model
         /// <param name="exist"></param>
         /// <param name="dic"></param>
         /// <returns></returns>
-        private void MatchingMutilLevels(OcrAchievement ocr, ExistAchievement exist, Dictionary<int, ExistAchievement> dic)
+        private void MatchingMutilLevels(OcrAchievement ocr, ExistAchievement exist, Dictionary<int, ExistAchievement> dic, bool done = true)
         {
             if (exist.id == 80127 || exist.id == 80128 || exist.id == 80129)
             {
                 if (exist.id == 80129)
                 {
-                    dic[80129].done = true;
+                    dic[80129].done = done;
                     dic[80128].done = true;
                     dic[80127].done = true;
                 }
                 else if (exist.id == 80128)
                 {
-                    dic[80128].done = true;
+                    dic[80128].done = done;
                     dic[80127].done = true;
                 }
                 else if (exist.id == 80127)
                 {
-                    dic[80127].done = true;
+                    dic[80127].done = done;
                 }
             }
             else if (exist.id == 81026 || exist.id == 81027 || exist.id == 81028)
@@ -108,18 +112,18 @@ namespace GenshinAchievement.Model
                 {
                     if (ocr.OcrAchievementDesc.Contains("3"))
                     {
-                        dic[81028].done = true;
+                        dic[81028].done = done;
                         dic[81027].done = true;
                         dic[81026].done = true;
                     }
                     else if (ocr.OcrAchievementDesc.Contains("2"))
                     {
-                        dic[81027].done = true;
+                        dic[81027].done = done;
                         dic[81026].done = true;
                     }
                     else if (ocr.OcrAchievementDesc.Contains("1"))
                     {
-                        dic[81026].done = true;
+                        dic[81026].done = done;
                     }
                 }
             }
@@ -129,18 +133,18 @@ namespace GenshinAchievement.Model
                 {
                     if (ocr.OcrAchievementDesc.Contains("3"))
                     {
-                        dic[81031].done = true;
+                        dic[81031].done = done;
                         dic[81030].done = true;
                         dic[81029].done = true;
                     }
                     else if (ocr.OcrAchievementDesc.Contains("2"))
                     {
-                        dic[81030].done = true;
+                        dic[81030].done = done;
                         dic[81029].done = true;
                     }
                     else if (ocr.OcrAchievementDesc.Contains("1"))
                     {
-                        dic[81029].done = true;
+                        dic[81029].done = done;
                     }
                 }
             }
@@ -150,18 +154,18 @@ namespace GenshinAchievement.Model
                 {
                     if (ocr.OcrAchievementDesc.Contains("50000"))
                     {
-                        dic[82043].done = true;
+                        dic[82043].done = done;
                         dic[82042].done = true;
                         dic[82041].done = true;
                     }
                     else if (ocr.OcrAchievementDesc.Contains("20000"))
                     {
-                        dic[82042].done = true;
+                        dic[82042].done = done;
                         dic[82041].done = true;
                     }
                     else if (ocr.OcrAchievementDesc.Contains("5000"))
                     {
-                        dic[82041].done = true;
+                        dic[82041].done = done;
                     }
                 }
             }
