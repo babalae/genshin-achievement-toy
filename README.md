@@ -9,7 +9,7 @@
                                               
 ## 下载地址
 
-[📥Github下载](https://github.com/babalae/genshin-achievement-toy/releases/download/v1.0/GenshinAchievement_v1.0.zip)
+[📥Github下载](https://github.com/babalae/genshin-achievement-toy/releases/download/v1.1/GenshinAchievement_v1.1.zip)
 
 ## 使用方法
 
@@ -34,3 +34,8 @@
   * 软件同级目录下的 `config.json` 可以修改相关参数。
 * 多次点击识别时报错？
   * 重启软件，建议每次识别成就都重启下软件。
+
+## 更多
+本软件大部分功能已经作为插件移植到 SG [SG.Plugin.Achievement.Exporter](https://github.com/emako/SG.Plugin.Achievement.Exporter)
+
+感谢 @emako 的移植和贡献
