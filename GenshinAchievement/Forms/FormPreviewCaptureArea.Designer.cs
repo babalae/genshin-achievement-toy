@@ -41,9 +41,9 @@ namespace GenshinAchievement
             this.pictureBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.pictureBox1.Location = new System.Drawing.Point(8, 59);
+            this.pictureBox1.Location = new System.Drawing.Point(8, 80);
             this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(384, 428);
+            this.pictureBox1.Size = new System.Drawing.Size(384, 417);
             this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pictureBox1.TabIndex = 0;
             this.pictureBox1.TabStop = false;
@@ -55,14 +55,14 @@ namespace GenshinAchievement
             this.label1.ForeColor = System.Drawing.Color.Red;
             this.label1.Location = new System.Drawing.Point(12, 9);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(384, 37);
+            this.label1.Size = new System.Drawing.Size(384, 56);
             this.label1.TabIndex = 1;
-            this.label1.Text = "以下为当前识别区域，请确认成就区域完整，且位于最顶部。点击确定开始进行成就识别！";
+            this.label1.Text = "以下为当前识别区域，请确认成就区域完整，且位于最顶部。点击确定开始进行成就识别！如果遇到异常情况可以按F11终止滚动识别。";
             // 
             // btnConfirm
             // 
             this.btnConfirm.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnConfirm.Location = new System.Drawing.Point(98, 493);
+            this.btnConfirm.Location = new System.Drawing.Point(98, 503);
             this.btnConfirm.Name = "btnConfirm";
             this.btnConfirm.Size = new System.Drawing.Size(75, 30);
             this.btnConfirm.TabIndex = 2;
@@ -73,7 +73,7 @@ namespace GenshinAchievement
             // btnCancel
             // 
             this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnCancel.Location = new System.Drawing.Point(225, 493);
+            this.btnCancel.Location = new System.Drawing.Point(225, 503);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(75, 30);
             this.btnCancel.TabIndex = 3;
@@ -85,13 +85,13 @@ namespace GenshinAchievement
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 18F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(404, 528);
+            this.ClientSize = new System.Drawing.Size(404, 538);
             this.Controls.Add(this.btnCancel);
             this.Controls.Add(this.btnConfirm);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.pictureBox1);
-            this.Name = "FormPreviewCaptureArea";
             this.Icon = global::GenshinAchievement.Properties.Resources.kokomi;
+            this.Name = "FormPreviewCaptureArea";
             this.Text = "预览识别区域";
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.ResumeLayout(false);
