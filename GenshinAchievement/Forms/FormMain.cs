@@ -1,4 +1,5 @@
 ﻿using GenshinAchievement.Core;
+using GenshinAchievement.Forms;
 using GenshinAchievement.Forms.Hotkey;
 using GenshinAchievement.Model;
 using GenshinAchievement.Utils;
@@ -70,6 +71,7 @@ namespace GenshinAchievement
             //    cboEdition.Items.Add(item.Key);
             //}
             cboEdition.Items.Add("天地万象");
+            cboEdition.Items.Add("心跳的记忆");
             cboEdition.Text = "天地万象";
             userDataPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "UserData");
             imgPagePath = Path.Combine(userDataPath, cboEdition.Text + "_img_page");
@@ -392,7 +394,7 @@ namespace GenshinAchievement
 
         private void btnExport3_Click(object sender, EventArgs e)
         {
-            FormText form = new FormText(TextUtils.GenerateCocogoatWorkJS(cboEdition.Text, paimonMoeJson));
+            FormCocogoat form = new FormCocogoat(TextUtils.GenerateCocogoatWorkJson(cboEdition.Text, paimonMoeJson));
             form.ShowDialog();
         }
 

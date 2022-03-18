@@ -48,10 +48,6 @@ namespace GenshinAchievement.Model
         /// 成就完成时间：位于图片的右下，接近底部
         /// </summary>
         public string OcrAchievementFinshDate { get; set; }
-        /// <summary>
-        /// 实际对应的ID
-        /// </summary>
-        public string GameId { get; set; }
 
         public ExistAchievement Match { get; set; }
 

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Web.Script.Serialization;
 
 namespace GenshinAchievement.Utils
 {
@@ -42,19 +43,6 @@ namespace GenshinAchievement.Utils
             return cos;
         }
 
-        public static string RetainChineseString(string str)
-        {
-            StringBuilder chineseString = new StringBuilder();
-            for (int i = 0; i < str.Length; i++)
-            {
-                if (str[i] >= 0x4E00 && str[i] <= 0x9FA5) //汉字
-                {
-                    chineseString.Append(str[i]);
-                }
-            }
-            return chineseString.Length > 0 ? chineseString.ToString() : string.Empty;
-        }
-
         public static string GeneratePaimonMoeJS(string edition, PaimonMoeJson paimonMoeJson)
         {
             string paimonMoeJsItem = "";
@@ -77,7 +65,7 @@ namespace GenshinAchievement.Utils
 */
 ";
 
-                paimonMoeJs+="const b = [" + paimonMoeJsItem + @"];
+            paimonMoeJs += "const b = [" + paimonMoeJsItem + @"];
 const a = (await localforage.getItem('achievement')) || { };
             b.forEach(c => { a[c[0]] = a[c[0]] ||{ }; a[c[0]][c[1]] = true})
 await localforage.setItem('achievement', a);
@@ -117,6 +105,13 @@ location.href='/achievements'";
             return js;
         }
 
+        /// <summary>
+        /// 没兼容cocogoat.work多账号模式，导致cocogoat.work出现问题，故弃用
+        /// </summary>
+        /// <param name="edition"></param>
+        /// <param name="paimonMoeJson"></param>
+        /// <returns></returns>
+        [Obsolete]
         public static string GenerateCocogoatWorkJS(string edition, PaimonMoeJson paimonMoeJson)
         {
             string jsItem = "";
@@ -148,6 +143,34 @@ localStorage.setItem(`cocogoat.v1.currentUser`,JSON.stringify(a))
 location.href='/achievement'";
 
             return js;
+        }
+
+        /// <summary>
+        /// 偷懒不用JSON库转换了
+        /// </summary>
+        /// <param name="edition"></param>
+        /// <param name="paimonMoeJson"></param>
+        /// <returns></returns>
+        public static string GenerateCocogoatWorkJson(string edition, PaimonMoeJson paimonMoeJson)
+        {
+            JavaScriptSerializer serializer = new JavaScriptSerializer();
+            List<CocogoatAchievement> list = new List<CocogoatAchievement>();
+            foreach (ExistAchievement existAchievement in paimonMoeJson.All[edition])
+            {
+                if (existAchievement.done)
+                {
+                    list.Add(
+                        new CocogoatAchievement
+                        {
+                            id = existAchievement.id,
+                            status = "手动勾选",
+                            categoryId = 0,
+                            date = existAchievement.ocrAchievement.OcrAchievementFinshDate
+                        }
+                    );
+                }
+            }
+            return "{\"value\":{\"achievements\":" + serializer.Serialize(list) + "}}" ;
         }
 
     }

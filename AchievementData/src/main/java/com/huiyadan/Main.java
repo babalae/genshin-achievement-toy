@@ -42,6 +42,10 @@ public class Main {
         }
         System.out.println(objectMapper.writeValueAsString(map));
 
+        Map<String, List<TargetVo>> map2 = listFromExcel.stream().collect(Collectors.groupingBy(TargetVo::getEdition, Collectors.toList()));
+        System.out.println("EXCEL:");
+        System.out.println(objectMapper.writeValueAsString(map));
+
         List<TargetVo> levelList = new ArrayList<>();
         List<TargetVo> tdwxList = map.get("天地万象");
         for (TargetVo targetVo : tdwxList) {
