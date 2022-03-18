@@ -145,12 +145,6 @@ location.href='/achievement'";
             return js;
         }
 
-        /// <summary>
-        /// 偷懒不用JSON库转换了
-        /// </summary>
-        /// <param name="edition"></param>
-        /// <param name="paimonMoeJson"></param>
-        /// <returns></returns>
         public static string GenerateCocogoatWorkJson(string edition, PaimonMoeJson paimonMoeJson)
         {
             JavaScriptSerializer serializer = new JavaScriptSerializer();
