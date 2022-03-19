@@ -43,6 +43,19 @@ namespace GenshinAchievement.Utils
             return cos;
         }
 
+        public static string RetainChineseString(string str)
+        {
+            StringBuilder chineseString = new StringBuilder();
+            for (int i = 0; i < str.Length; i++)
+            {
+                if (str[i] >= 0x4E00 && str[i] <= 0x9FA5) //汉字
+                {
+                    chineseString.Append(str[i]);
+                }
+            }
+            return chineseString.Length > 0 ? chineseString.ToString() : string.Empty;
+        }
+
         public static string GeneratePaimonMoeJS(string edition, PaimonMoeJson paimonMoeJson)
         {
             string paimonMoeJsItem = "";
@@ -57,6 +70,7 @@ namespace GenshinAchievement.Utils
             {
                 paimonMoeJsItem.Substring(paimonMoeJsItem.Length - 2, 1);
             }
+            // const a = (await localforage.getItem('achievement')) || { };
             string paimonMoeJs = @"/*
 * 复制此处所有内容，
 * 在 https://paimon.moe/ 页面按F12打开开发者工具，
@@ -66,7 +80,7 @@ namespace GenshinAchievement.Utils
 ";
 
             paimonMoeJs += "const b = [" + paimonMoeJsItem + @"];
-const a = (await localforage.getItem('achievement')) || { };
+const a = { };
             b.forEach(c => { a[c[0]] = a[c[0]] ||{ }; a[c[0]][c[1]] = true})
 await localforage.setItem('achievement', a);
             location.href = '/achievement'";

@@ -26,14 +26,18 @@ namespace GenshinAchievement.Model
             return paimonMoe;
         }
 
-        public ExistAchievement Matching(string edition, OcrAchievement ocrAchievement)
+        public ExistAchievement Matching(string edition, OcrAchievement ocrAchievement, bool onlyChinese = false)
         {
-            Dictionary<int, ExistAchievement> dic = List2Dic(All[edition]);
+            if (string.IsNullOrEmpty(ocrAchievement.OcrText))
+            {
+                return null;
+            }
+
             double max = 0;
             ExistAchievement maxMatch = null;
             foreach (ExistAchievement existAchievement in All[edition])
             {
-                double n = Matching(ocrAchievement, existAchievement);
+                double n = Matching(ocrAchievement, existAchievement, onlyChinese);
                 if (n > max)
                 {
                     max = n;
@@ -41,7 +45,7 @@ namespace GenshinAchievement.Model
                 }
 
             }
-            if (max > 0.6 && maxMatch != null && !string.IsNullOrWhiteSpace(ocrAchievement.OcrText))
+            if (max > 0.7 && maxMatch != null && !string.IsNullOrWhiteSpace(ocrAchievement.OcrText))
             {
                 if (ocrAchievement.OcrText.Contains("达成"))
                 {
@@ -50,33 +54,48 @@ namespace GenshinAchievement.Model
                     // 成就集合要再次匹配描述，并把下级成就给完成
                     if (maxMatch.levels != null && maxMatch.levels.Count > 1)
                     {
-                        MatchingMutilLevels(ocrAchievement, maxMatch, dic);
+                        MatchingMutilLevels(ocrAchievement, maxMatch, List2Dic(All[edition]));
                     }
                     else
                     {
+                        //if(max < 0.9)
+                        //{
+                        //    Console.WriteLine($"{ocrAchievement.OcrAchievementName + ocrAchievement.OcrAchievementDesc} 最大匹配 {maxMatch?.name + maxMatch?.desc} 匹配度 {max}");
+                        //}
                         maxMatch.done = true;
                     }
                 }
                 else if (maxMatch.levels != null && maxMatch.levels.Count > 1)
                 {
-                    MatchingMutilLevels(ocrAchievement, maxMatch, dic, false);
+                    MatchingMutilLevels(ocrAchievement, maxMatch, List2Dic(All[edition]), false);
                 }
             }
             else
             {
-                Console.WriteLine($"{ocrAchievement.OcrAchievementName} 最小匹配 {maxMatch?.name} 匹配度 {max}");
+                if (ocrAchievement.OcrText.Contains("达成") && !onlyChinese)
+                {
+                    Matching(edition, ocrAchievement, true);
+                }
+                Console.WriteLine($"{ocrAchievement.OcrLeftText} 最小匹配 {maxMatch?.name + maxMatch?.desc} 匹配度 {max}");
             }
 
             return maxMatch;
         }
 
-        private double Matching(OcrAchievement ocr, ExistAchievement exist)
+        private double Matching(OcrAchievement ocr, ExistAchievement exist, bool onlyChinese)
         {
-            if (string.IsNullOrEmpty(ocr.OcrAchievementName))
+            if (string.IsNullOrEmpty(ocr.OcrLeftText))
             {
                 return -1;
             }
-            return TextUtils.Similarity(ocr.OcrAchievementName, exist.name);
+            if (onlyChinese)
+            {
+                return TextUtils.Similarity(TextUtils.RetainChineseString(ocr.OcrLeftText), TextUtils.RetainChineseString(exist.name + exist.desc));
+            }
+            else
+            {
+                return TextUtils.Similarity(ocr.OcrLeftText, exist.name + exist.desc);
+            }
         }
 
         /// <summary>
@@ -108,20 +127,20 @@ namespace GenshinAchievement.Model
             }
             else if (exist.id == 81026 || exist.id == 81027 || exist.id == 81028)
             {
-                if (!string.IsNullOrEmpty(ocr.OcrAchievementDesc))
+                if (!string.IsNullOrEmpty(ocr.OcrLeftText))
                 {
-                    if (ocr.OcrAchievementDesc.Contains("3"))
+                    if (ocr.OcrLeftText.Contains("3"))
                     {
                         dic[81028].done = done;
                         dic[81027].done = true;
                         dic[81026].done = true;
                     }
-                    else if (ocr.OcrAchievementDesc.Contains("2"))
+                    else if (ocr.OcrLeftText.Contains("2"))
                     {
                         dic[81027].done = done;
                         dic[81026].done = true;
                     }
-                    else if (ocr.OcrAchievementDesc.Contains("1"))
+                    else if (ocr.OcrLeftText.Contains("1"))
                     {
                         dic[81026].done = done;
                     }
@@ -129,20 +148,20 @@ namespace GenshinAchievement.Model
             }
             else if (exist.id == 81029 || exist.id == 81030 || exist.id == 81031)
             {
-                if (!string.IsNullOrEmpty(ocr.OcrAchievementDesc))
+                if (!string.IsNullOrEmpty(ocr.OcrLeftText))
                 {
-                    if (ocr.OcrAchievementDesc.Contains("3"))
+                    if (ocr.OcrLeftText.Contains("3"))
                     {
                         dic[81031].done = done;
                         dic[81030].done = true;
                         dic[81029].done = true;
                     }
-                    else if (ocr.OcrAchievementDesc.Contains("2"))
+                    else if (ocr.OcrLeftText.Contains("2"))
                     {
                         dic[81030].done = done;
                         dic[81029].done = true;
                     }
-                    else if (ocr.OcrAchievementDesc.Contains("1"))
+                    else if (ocr.OcrLeftText.Contains("1"))
                     {
                         dic[81029].done = done;
                     }
@@ -150,20 +169,20 @@ namespace GenshinAchievement.Model
             }
             else if (exist.id == 82041 || exist.id == 82042 || exist.id == 82043)
             {
-                if (!string.IsNullOrEmpty(ocr.OcrAchievementDesc))
+                if (!string.IsNullOrEmpty(ocr.OcrLeftText))
                 {
-                    if (ocr.OcrAchievementDesc.Contains("50000"))
+                    if (ocr.OcrLeftText.Contains("50000"))
                     {
                         dic[82043].done = done;
                         dic[82042].done = true;
                         dic[82041].done = true;
                     }
-                    else if (ocr.OcrAchievementDesc.Contains("20000"))
+                    else if (ocr.OcrLeftText.Contains("20000"))
                     {
                         dic[82042].done = done;
                         dic[82041].done = true;
                     }
-                    else if (ocr.OcrAchievementDesc.Contains("5000"))
+                    else if (ocr.OcrLeftText.Contains("5000"))
                     {
                         dic[82041].done = done;
                     }

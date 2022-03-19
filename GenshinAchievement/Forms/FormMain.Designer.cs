@@ -44,6 +44,9 @@ namespace GenshinAchievement
             this.btnExport1 = new System.Windows.Forms.Button();
             this.label3 = new System.Windows.Forms.Label();
             this.linkLabel1 = new System.Windows.Forms.LinkLabel();
+            this.button1 = new System.Windows.Forms.Button();
+            this.btnClear = new System.Windows.Forms.Button();
+            this.btnUploadCocogoat = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox4.SuspendLayout();
@@ -53,9 +56,9 @@ namespace GenshinAchievement
             // 
             this.rtbConsole.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left)));
-            this.rtbConsole.Location = new System.Drawing.Point(12, 387);
+            this.rtbConsole.Location = new System.Drawing.Point(12, 424);
             this.rtbConsole.Name = "rtbConsole";
-            this.rtbConsole.Size = new System.Drawing.Size(298, 194);
+            this.rtbConsole.Size = new System.Drawing.Size(298, 180);
             this.rtbConsole.TabIndex = 0;
             this.rtbConsole.Text = "";
             // 
@@ -200,11 +203,43 @@ namespace GenshinAchievement
             this.linkLabel1.Text = "软件主页";
             this.linkLabel1.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel1_LinkClicked);
             // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(367, 177);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(111, 30);
+            this.button1.TabIndex = 15;
+            this.button1.Text = "OcrTest";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
+            // 
+            // btnClear
+            // 
+            this.btnClear.Location = new System.Drawing.Point(12, 387);
+            this.btnClear.Name = "btnClear";
+            this.btnClear.Size = new System.Drawing.Size(130, 30);
+            this.btnClear.TabIndex = 3;
+            this.btnClear.Text = "清空记录";
+            this.btnClear.UseVisualStyleBackColor = true;
+            // 
+            // btnUploadCocogoat
+            // 
+            this.btnUploadCocogoat.ForeColor = System.Drawing.Color.BlueViolet;
+            this.btnUploadCocogoat.Location = new System.Drawing.Point(148, 387);
+            this.btnUploadCocogoat.Name = "btnUploadCocogoat";
+            this.btnUploadCocogoat.Size = new System.Drawing.Size(162, 30);
+            this.btnUploadCocogoat.TabIndex = 16;
+            this.btnUploadCocogoat.Text = "上传至椰羊识别";
+            this.btnUploadCocogoat.UseVisualStyleBackColor = true;
+            // 
             // FormMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 18F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(322, 593);
+            this.ClientSize = new System.Drawing.Size(323, 616);
+            this.Controls.Add(this.btnUploadCocogoat);
+            this.Controls.Add(this.btnClear);
+            this.Controls.Add(this.button1);
             this.Controls.Add(this.linkLabel1);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.groupBox4);
@@ -245,6 +280,9 @@ namespace GenshinAchievement
         private System.Windows.Forms.LinkLabel linkLabel1;
         private System.Windows.Forms.ProgressBar progressBar1;
         private System.Windows.Forms.Button btnExport3;
+        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Button btnClear;
+        private System.Windows.Forms.Button btnUploadCocogoat;
     }
 }
 

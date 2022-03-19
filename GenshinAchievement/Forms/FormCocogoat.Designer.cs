@@ -87,6 +87,7 @@
             this.Controls.Add(this.richTextBox1);
             this.Name = "FormCocogoat";
             this.Text = "导出至椰羊";
+            this.Icon = global::GenshinAchievement.Properties.Resources.kokomi;
             this.ResumeLayout(false);
             this.PerformLayout();
 

@@ -33,11 +33,11 @@ namespace GenshinAchievement.Model
         public OcrResult OcrResult { get; set; }
 
         /// <summary>
-        /// 成就名称：位于图片的左上
+        /// 成就名称：位于图片的左上 !当前识别不准没啥用
         /// </summary>
         public string OcrAchievementName { get; set; }
         /// <summary>
-        /// 成就描述：位于图片的左下
+        /// 成就描述：位于图片的左下 !当前识别不准没啥用
         /// </summary>
         public string OcrAchievementDesc { get; set; }
         /// <summary>
@@ -48,6 +48,11 @@ namespace GenshinAchievement.Model
         /// 成就完成时间：位于图片的右下，接近底部
         /// </summary>
         public string OcrAchievementFinshDate { get; set; }
+
+        /// <summary>
+        /// 位于左侧的文字，用于识别与比较相似度
+        /// </summary>
+        public string OcrLeftText { get; set; }
 
         public ExistAchievement Match { get; set; }
 
@@ -82,27 +87,42 @@ namespace GenshinAchievement.Model
             double margin = horizontalY / 4; // 用于边缘容错
             double verticalX = Image.Width * 1.0 / 2;
             OcrResult ocrResult = await OcrUtils.RecognizeAsync(ImagePath, engine);
+
+            // 完整结果
             foreach (var line in ocrResult.Lines)
+            {
+                OcrText += OcrUtils.LineString(line) + Environment.NewLine;
+            }
+
+            // 先找出左侧的两个识别区域
+            List<OcrLine> leftLines = ocrResult.Lines
+                .Where(line => line.Words[0].BoundingRect.Left < verticalX)
+                .OrderBy(line => line.Words[0].BoundingRect.Top).ToList();
+            foreach (var line in leftLines)
+            {
+                OcrLeftText += OcrUtils.LineString(line); // 实际用于文本比较的内容
+            }
+            if (leftLines.Count == 2)
+            {
+                OcrAchievementName = OcrUtils.LineString(leftLines[0]); // 左上
+                OcrAchievementDesc = OcrUtils.LineString(leftLines[1]); // 左下
+            }
+            else
+            {
+                Console.WriteLine("左侧区域未识别到2个结果" + leftLines.Count);
+            }
+
+            List<OcrLine> rightLines = ocrResult.Lines.Where(line => line.Words[0].BoundingRect.Left > verticalX).ToList();
+            foreach (var line in rightLines)
             {
                 Windows.Foundation.Rect firstRect = line.Words[0].BoundingRect;
                 string lineStr = OcrUtils.LineString(line);
-                OcrText += lineStr + Environment.NewLine;
-                if (firstRect.Left < verticalX && firstRect.Bottom <= horizontalY + margin)
-                {
-                    if (string.IsNullOrEmpty(OcrAchievementName))
-                    {
-                        OcrAchievementName = lineStr; // 左上
-                    }
-                }
-                else if (firstRect.Left < verticalX && firstRect.Top >= horizontalY - margin)
-                {
-                    OcrAchievementDesc = lineStr; // 左下
-                }
-                else if ("达成".Equals(lineStr) || firstRect.Left > verticalX && firstRect.Top < horizontalY && firstRect.Bottom > horizontalY)
+
+                if ("达成".Equals(lineStr) || (firstRect.Top < horizontalY && firstRect.Bottom > horizontalY))
                 {
                     OcrAchievementResult = lineStr; // 右中 // 98 远海牧人的宝藏 失败
                 }
-                else if (firstRect.Left > verticalX && firstRect.Top > horizontalY)
+                else if (firstRect.Top > horizontalY)
                 {
                     OcrAchievementFinshDate = lineStr.Replace(" ", "").Replace("／", "/"); // 右下 去空格
                 }
