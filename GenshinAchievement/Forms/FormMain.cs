@@ -412,6 +412,11 @@ namespace GenshinAchievement
             paimonMoeJson = PaimonMoeJson.Builder();
         }
 
+        private void btnUploadCocogoat_Click(object sender, EventArgs e)
+        {
+            new FormUploadTips().ShowDialog();
+        }
+
         private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
             Process.Start("https://github.com/babalae/genshin-achievement-toy");

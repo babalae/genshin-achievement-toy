@@ -232,12 +232,13 @@ namespace GenshinAchievement
             this.btnUploadCocogoat.TabIndex = 16;
             this.btnUploadCocogoat.Text = "上传至椰羊识别";
             this.btnUploadCocogoat.UseVisualStyleBackColor = true;
+            this.btnUploadCocogoat.Click += new System.EventHandler(this.btnUploadCocogoat_Click);
             // 
             // FormMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 18F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(574, 616);
+            this.ClientSize = new System.Drawing.Size(323, 616);
             this.Controls.Add(this.btnUploadCocogoat);
             this.Controls.Add(this.btnClear);
             this.Controls.Add(this.button1);
