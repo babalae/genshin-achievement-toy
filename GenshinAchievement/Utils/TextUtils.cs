@@ -80,7 +80,7 @@ namespace GenshinAchievement.Utils
 ";
 
             paimonMoeJs += "const b = [" + paimonMoeJsItem + @"];
-const a = { };
+const a = (await localforage.getItem('achievement')) || { };
             b.forEach(c => { a[c[0]] = a[c[0]] ||{ }; a[c[0]][c[1]] = true})
 await localforage.setItem('achievement', a);
             location.href = '/achievement'";
