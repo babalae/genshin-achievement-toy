@@ -74,8 +74,6 @@ namespace GenshinAchievement
             cboEdition.Items.Add("心跳的记忆");
             cboEdition.Text = "天地万象";
             userDataPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "UserData");
-            imgPagePath = Path.Combine(userDataPath, cboEdition.Text + "_img_page");
-            imgSectionPath = Path.Combine(userDataPath, cboEdition.Text + "_img_section");
 
 
             string configPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "config.json");
@@ -161,6 +159,8 @@ namespace GenshinAchievement
                 stopFlag = false;
                 DisabledAllControl();
 
+                imgPagePath = Path.Combine(userDataPath, cboEdition.Text + "_img_page");
+                imgSectionPath = Path.Combine(userDataPath, cboEdition.Text + "_img_section");
 
 
                 // 1.切换到原神窗口
@@ -203,8 +203,6 @@ namespace GenshinAchievement
                 IOUtils.CreateFolder(userDataPath);
                 IOUtils.CreateFolder(imgPagePath);
                 IOUtils.DeleteFolder(imgPagePath);
-
-                paimonMoeJson = PaimonMoeJson.Builder();
 
                 await Task.Run(async () =>
                 {
@@ -322,6 +320,8 @@ namespace GenshinAchievement
                 //PrintMsg($"{item.Name}切片完成");
                 progressBar1.Value++;
             }
+            IOUtils.DeleteFolder(imgPagePath); // 切片完成后删除page
+            Directory.Delete(imgPagePath);
         }
 
         private List<OcrAchievement> LoadImgSection()
@@ -400,9 +400,16 @@ namespace GenshinAchievement
 
         private async void button1_Click(object sender, EventArgs e)
         {
+            imgSectionPath = Path.Combine(userDataPath, cboEdition.Text + "_img_section");
             List<OcrAchievement> list = LoadImgSection();
             await Ocr(list);
             Matching(list);
+        }
+
+        private void btnClear_Click(object sender, EventArgs e)
+        {
+            IOUtils.DeleteFolder(userDataPath);
+            paimonMoeJson = PaimonMoeJson.Builder();
         }
 
         private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)

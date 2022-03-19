@@ -11,18 +11,16 @@ namespace GenshinAchievement.Model
 {
     public class PaimonMoeJson
     {
-        public Dictionary<string, List<ExistAchievement>> All { get; set; }
+        public Dictionary<string, int> EditionIndexDic { get; set; }
 
-        /// <summary>
-        /// 按id索引
-        /// </summary>
-        public Dictionary<int, ExistAchievement> AchievementDic { get; set; }
+        public Dictionary<string, List<ExistAchievement>> All { get; set; }
 
         public static PaimonMoeJson Builder()
         {
             PaimonMoeJson paimonMoe = new PaimonMoeJson();
             JavaScriptSerializer serializer = new JavaScriptSerializer();
             paimonMoe.All = serializer.Deserialize<Dictionary<string, List<ExistAchievement>>>(Properties.Resources.AchievementJson);
+            paimonMoe.EditionIndexDic = new Dictionary<string, int> { { "天地万象", 0 }, { "心跳的记忆", 17 } };
             return paimonMoe;
         }
 

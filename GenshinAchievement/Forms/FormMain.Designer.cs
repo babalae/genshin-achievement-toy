@@ -221,6 +221,7 @@ namespace GenshinAchievement
             this.btnClear.TabIndex = 3;
             this.btnClear.Text = "清空记录";
             this.btnClear.UseVisualStyleBackColor = true;
+            this.btnClear.Click += new System.EventHandler(this.btnClear_Click);
             // 
             // btnUploadCocogoat
             // 
@@ -236,7 +237,7 @@ namespace GenshinAchievement
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 18F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(323, 616);
+            this.ClientSize = new System.Drawing.Size(574, 616);
             this.Controls.Add(this.btnUploadCocogoat);
             this.Controls.Add(this.btnClear);
             this.Controls.Add(this.button1);

@@ -63,7 +63,7 @@ namespace GenshinAchievement.Utils
             {
                 if (existAchievement.done)
                 {
-                    paimonMoeJsItem += $"[0,{existAchievement.id}],";
+                    paimonMoeJsItem += $"[{paimonMoeJson.EditionIndexDic[edition]},{existAchievement.id}],";
                 }
             }
             if (paimonMoeJsItem.EndsWith(","))
@@ -111,7 +111,7 @@ await localforage.setItem('achievement', a);
 ";
             js += "const z = [" + jsItem + @"];
 const a = localStorage.account || 'main'
-const b = JSON.parse(localStorage.getItem(`cocogoat.v1.${a}`)||'{}')
+const b = JSON.parse(localStorage.getItem(`${a}-achievements`)||'{}')
 z.forEach(c=>{b[c[0]]={done:true,notes:c[1]}})
 localStorage.setItem(`${a}-achievements`,JSON.stringify(b))
 localStorage.last_update = (new Date()).toISOString()
@@ -167,18 +167,17 @@ location.href='/achievement'";
             {
                 if (existAchievement.done)
                 {
-                    list.Add(
-                        new CocogoatAchievement
-                        {
-                            id = existAchievement.id,
-                            status = "手动勾选",
-                            categoryId = 0,
-                            date = existAchievement.ocrAchievement.OcrAchievementFinshDate
-                        }
-                    );
+                    CocogoatAchievement cocogoatAchievement = new CocogoatAchievement
+                    {
+                        id = existAchievement.id,
+                        status = "手动勾选",
+                        categoryId = paimonMoeJson.EditionIndexDic[edition],
+                        date = existAchievement.ocrAchievement == null ? "" : existAchievement.ocrAchievement.OcrAchievementFinshDate
+                    };
+                    list.Add(cocogoatAchievement);
                 }
             }
-            return "{\"value\":{\"achievements\":" + serializer.Serialize(list) + "}}" ;
+            return "{\"value\":{\"achievements\":" + serializer.Serialize(list) + "}}";
         }
 
     }
