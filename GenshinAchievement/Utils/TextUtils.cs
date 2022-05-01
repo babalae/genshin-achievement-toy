@@ -1,4 +1,5 @@
 ﻿using GenshinAchievement.Model;
+using GenshinAchievement.Model.UIAF;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -180,5 +181,69 @@ location.href='/achievement'";
             return "{\"value\":{\"achievements\":" + serializer.Serialize(list) + "}}";
         }
 
+
+        public static string GenerateUIAFJson(string edition, PaimonMoeJson paimonMoeJson)
+        {
+            JavaScriptSerializer serializer = new JavaScriptSerializer();
+
+            UIAFInfo info = new UIAFInfo
+            {
+                export_app = "genshin-achievement-toy",
+                export_app_version = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString(),
+                export_timestamp = CurrentTimeStamp(),
+                uiaf_version = "v1.0",
+            };
+            List<UIAFAchievement> list = new List<UIAFAchievement>();
+            foreach (ExistAchievement existAchievement in paimonMoeJson.All[edition])
+            {
+                if (existAchievement.done)
+                {
+                    UIAFAchievement achievement = new UIAFAchievement
+                    {
+                        id = existAchievement.id,
+                        timestamp = ToTimeStamp(existAchievement.ocrAchievement),
+                        current = 30,
+                    };
+                    list.Add(achievement);
+                }
+            }
+            UIAFData data = new UIAFData
+            {
+                info = info,
+                list = list
+            };
+            return serializer.Serialize(data);
+        }
+
+
+        /// <summary>
+        /// 获取时间戳 可选秒级/毫秒级
+        /// </summary>
+        /// <returns></returns>
+        public static long CurrentTimeStamp(bool isMinseconds = false)
+        {
+            var ts = DateTime.Now - new DateTime(1970, 1, 1, 0, 0, 0, 0);
+            return Convert.ToInt64(isMinseconds ? ts.TotalMilliseconds : ts.TotalSeconds);
+        }
+
+        public static long ToTimeStamp(OcrAchievement ocrAchievement)
+        {
+            string ocrDate = ocrAchievement == null ? null : ocrAchievement.OcrAchievementFinshDate;
+            if (ocrDate == null || ocrDate.Length != 10 || !ocrDate.Contains("/"))
+            {
+                return 253402271999;
+            }
+            try
+            {
+                DateTime dt = DateTime.ParseExact(ocrDate, "yyyy/MM/dd", System.Globalization.CultureInfo.CurrentCulture);
+                var ts = dt - new DateTime(1970, 1, 1, 0, 0, 0, 0);
+                return Convert.ToInt64(ts.TotalSeconds);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                return 253402271999;
+            }
+        }
     }
 }

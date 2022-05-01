@@ -108,6 +108,9 @@
       <DependentUpon>FormMain.cs</DependentUpon>
     </Compile>
     <Compile Include="Model\PaimonMoeJson.cs" />
+    <Compile Include="Model\UIAF\UIAFAchievement.cs" />
+    <Compile Include="Model\UIAF\UIAFData.cs" />
+    <Compile Include="Model\UIAF\UIAFInfo.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Utils\Device.cs" />

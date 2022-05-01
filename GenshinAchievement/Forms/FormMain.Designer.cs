@@ -47,6 +47,7 @@ namespace GenshinAchievement
             this.button1 = new System.Windows.Forms.Button();
             this.btnClear = new System.Windows.Forms.Button();
             this.btnUploadCocogoat = new System.Windows.Forms.Button();
+            this.btnExport4 = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox4.SuspendLayout();
@@ -56,9 +57,9 @@ namespace GenshinAchievement
             // 
             this.rtbConsole.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left)));
-            this.rtbConsole.Location = new System.Drawing.Point(12, 424);
+            this.rtbConsole.Location = new System.Drawing.Point(12, 454);
             this.rtbConsole.Name = "rtbConsole";
-            this.rtbConsole.Size = new System.Drawing.Size(298, 180);
+            this.rtbConsole.Size = new System.Drawing.Size(298, 203);
             this.rtbConsole.TabIndex = 0;
             this.rtbConsole.Text = "";
             // 
@@ -142,12 +143,13 @@ namespace GenshinAchievement
             // 
             // groupBox4
             // 
+            this.groupBox4.Controls.Add(this.btnExport4);
             this.groupBox4.Controls.Add(this.btnExport3);
             this.groupBox4.Controls.Add(this.btnExport2);
             this.groupBox4.Controls.Add(this.btnExport1);
             this.groupBox4.Location = new System.Drawing.Point(12, 243);
             this.groupBox4.Name = "groupBox4";
-            this.groupBox4.Size = new System.Drawing.Size(298, 138);
+            this.groupBox4.Size = new System.Drawing.Size(298, 169);
             this.groupBox4.TabIndex = 12;
             this.groupBox4.TabStop = false;
             this.groupBox4.Text = "第三步：导出结果";
@@ -215,7 +217,7 @@ namespace GenshinAchievement
             // 
             // btnClear
             // 
-            this.btnClear.Location = new System.Drawing.Point(12, 387);
+            this.btnClear.Location = new System.Drawing.Point(12, 418);
             this.btnClear.Name = "btnClear";
             this.btnClear.Size = new System.Drawing.Size(130, 30);
             this.btnClear.TabIndex = 3;
@@ -226,7 +228,7 @@ namespace GenshinAchievement
             // btnUploadCocogoat
             // 
             this.btnUploadCocogoat.ForeColor = System.Drawing.Color.BlueViolet;
-            this.btnUploadCocogoat.Location = new System.Drawing.Point(148, 387);
+            this.btnUploadCocogoat.Location = new System.Drawing.Point(148, 418);
             this.btnUploadCocogoat.Name = "btnUploadCocogoat";
             this.btnUploadCocogoat.Size = new System.Drawing.Size(162, 30);
             this.btnUploadCocogoat.TabIndex = 16;
@@ -234,11 +236,21 @@ namespace GenshinAchievement
             this.btnUploadCocogoat.UseVisualStyleBackColor = true;
             this.btnUploadCocogoat.Click += new System.EventHandler(this.btnUploadCocogoat_Click);
             // 
+            // btnExport4
+            // 
+            this.btnExport4.Location = new System.Drawing.Point(22, 133);
+            this.btnExport4.Name = "btnExport4";
+            this.btnExport4.Size = new System.Drawing.Size(253, 30);
+            this.btnExport4.TabIndex = 3;
+            this.btnExport4.Text = "导出为 UIAF 格式";
+            this.btnExport4.UseVisualStyleBackColor = true;
+            this.btnExport4.Click += new System.EventHandler(this.btnExport4_Click);
+            // 
             // FormMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 18F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(323, 616);
+            this.ClientSize = new System.Drawing.Size(323, 669);
             this.Controls.Add(this.btnUploadCocogoat);
             this.Controls.Add(this.btnClear);
             this.Controls.Add(this.button1);
@@ -285,6 +297,7 @@ namespace GenshinAchievement
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.Button btnClear;
         private System.Windows.Forms.Button btnUploadCocogoat;
+        private System.Windows.Forms.Button btnExport4;
     }
 }
 

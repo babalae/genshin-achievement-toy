@@ -286,6 +286,7 @@ namespace GenshinAchievement
             btnExport1.Enabled = false;
             btnExport2.Enabled = false;
             btnExport3.Enabled = false;
+            btnExport4.Enabled = false;
         }
         private void EnabledAllControl()
         {
@@ -295,6 +296,7 @@ namespace GenshinAchievement
             btnExport1.Enabled = true;
             btnExport2.Enabled = true;
             btnExport3.Enabled = true;
+            btnExport4.Enabled = true;
         }
 
         /// <summary>
@@ -397,7 +399,11 @@ namespace GenshinAchievement
             FormCocogoat form = new FormCocogoat(TextUtils.GenerateCocogoatWorkJson(cboEdition.Text, paimonMoeJson));
             form.ShowDialog();
         }
-
+        private void btnExport4_Click(object sender, EventArgs e)
+        {
+            FormText form = new FormText(TextUtils.GenerateUIAFJson(cboEdition.Text, paimonMoeJson));
+            form.ShowDialog();
+        }
         private async void button1_Click(object sender, EventArgs e)
         {
             imgSectionPath = Path.Combine(userDataPath, cboEdition.Text + "_img_section");
@@ -416,6 +422,8 @@ namespace GenshinAchievement
         {
             new FormUploadTips().ShowDialog();
         }
+
+
 
         private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
