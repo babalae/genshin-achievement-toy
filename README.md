@@ -9,7 +9,7 @@
                                               
 ## 下载地址
 
-[📥Github下载](https://github.com/babalae/genshin-achievement-toy/releases/download/v1.2/GenshinAchievement_v1.2.zip)
+[📥Github下载](https://github.com/babalae/genshin-achievement-toy/releases/download/v1.3/GenshinAchievement_v1.3.zip)
 
 ## 使用方法
 
