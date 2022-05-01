@@ -9,7 +9,7 @@
                                               
 ## 下载地址
 
-[📥Github下载](https://github.com/babalae/genshin-achievement-toy/releases/download/v1.1/GenshinAchievement_v1.1.zip)
+[📥Github下载](https://github.com/babalae/genshin-achievement-toy/releases/download/v1.2/GenshinAchievement_v1.2.zip)
 
 ## 使用方法
 
@@ -32,10 +32,12 @@
   * 因为游戏以管理员权限启动，软件不以管理员权限启动的话没法模拟鼠标点击与滚动。
 * 如何修改停止快捷键（F11）以及其他程序参数？
   * 软件同级目录下的 `config.json` 可以修改相关参数。
-* 多次点击识别时报错？
-  * 重启软件，建议每次识别成就都重启下软件。
+* 识别率一直很低怎么办
+  * 一键识别成就后，可以把软件所在目录的 UserData/*_img_section/ 文件夹中的所有图片上传至 [cocogoat.work](https://cocogoat.work/achievement) 进行识别。
 
 ## 更多
-本软件大部分功能已经作为插件移植到 SG [SG.Plugin.Achievement.Exporter](https://github.com/emako/SG.Plugin.Achievement.Exporter)
+本软件大部分功能已经作为插件 [SG.Plugin.Achievement.Exporter](https://github.com/emako/SG.Plugin.Achievement.Exporter) 移植到 [Snap Genshin](https://github.com/DGP-Studio/Snap.Genshin)。
 
-感谢 @emako 的移植和贡献
+感谢 [@emako](https://github.com/emako) 的移植和贡献。
+
+感谢 [椰羊 cocogoat](https://github.com/YuehaiTeam/cocogoat) 提供的成就图片三方导入识别入口。
