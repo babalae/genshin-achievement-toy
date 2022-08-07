@@ -1,3 +1,7 @@
+# 弃坑
+
+有更好用的 [YaeAchievement](https://github.com/HolographicHat/YaeAchievement) 啦，所以这个项目暂时弃坑啦~
+
 # 🏆 原神成就识别
 
 原神成就识别，主要用于快速查找未完成的隐藏成就，所以只支持“天地万象”的成就导出。
